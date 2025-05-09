@@ -1,0 +1,126 @@
+/* System Font Stack & Grundlayout */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #222;
+  line-height: 1.6;
+}
+
+header, footer {
+  background-color: #fff;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: relative;
+  z-index: 10;
+}
+
+.logo {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #005080;
+}
+
+.logo a {
+  text-decoration: none; /* Kein Unterstrich */
+  color: inherit; /* Gleiche Farbe wie der umgebende Text */
+  font-size: 2rem;
+}
+
+
+.logo2 {     
+	position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px; /* Optional: Abstand vom Rand */
+    max-width: 9%;  /* Logo wird auf max. 15% der Fensterbreite begrenzt */
+    height: auto; /* Die Höhe passt sich automatisch der Breite an */
+}
+
+.center-text {
+  text-align: center; /* Text horizontal mittig ausrichten */
+}
+
+nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: #fff;
+  padding: 1rem 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: auto;
+  align-items: flex-start;
+  width: 200px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+
+nav.open {
+  display: flex;
+}
+
+nav a {
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: #005080;
+}
+
+
+.main {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.accordion {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+}
+
+.accordion-header {
+  background: #eee;
+  padding: 1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.accordion-content {
+  display: none;
+  padding: 1rem;
+  background: #fefefe;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.9rem;
+  padding: 1rem;
+  margin-top: 3rem;
+}
+
+@media (min-width: 768px) {
+  nav {
+    display: flex !important;
+    flex-direction: row;
+    position: static;
+    box-shadow: none;
+    justify-content: center;
+  }
+  .menu-toggle {
+    display: none;
+  }
+  nav a {
+    margin: 0 1rem;
+  }
+}
