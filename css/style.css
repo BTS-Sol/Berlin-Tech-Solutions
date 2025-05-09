@@ -202,3 +202,22 @@ footer {
 .contact-form .submit-btn:hover {
   background-color: #003d66;
 }
+
+/* =========================
+   Anpassungen für das Einverständnis-Kästchen
+   ========================= */
+
+.contact-form .checkbox label {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #333;
+  margin-left: 0; /* Links bündig ausrichten */
+}
+
+.contact-form .checkbox input {
+  transform: scale(1.25); /* Vergrößert die Checkbox um 25% */
+  margin-right: 0.5rem;
+  margin-top: 0; /* Damit es genau auf gleicher Höhe beginnt */
+}
+
