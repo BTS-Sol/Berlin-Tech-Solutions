@@ -206,11 +206,9 @@ footer {
 
 .contact-form .checkbox input {
   transform: scale(1.25); /* Vergrößert die Checkbox um 25% */
-  margin-right: -50rem;
 }
 
 .contact-form .checkbox {
   margin-top: 1.0rem; /* Damit es genau auf gleicher Höhe beginnt */
   margin-bottom: 1.5rem;
-  margin-left: -50rem; /* Schiebt das ganze Element nach links */
 }
