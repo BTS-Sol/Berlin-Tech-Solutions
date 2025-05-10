@@ -19,39 +19,32 @@
     </nav>
 	<img src="img/logo.png" alt="Logo" class="logo2">
   </header>
-  <main class="main">
-  <section class="contact-section">
-    <h1>Kontaktieren Sie uns</h1>
-    <p class="intro">Haben Sie Fragen oder Anregungen? Schreiben Sie uns – wir melden uns schnellstmöglich zurück!</p>
-    
-    <form class="contact-form" action="https://form.taxi/s/jss611j1" method="POST">
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="Name" placeholder="Ihr Name" required>
-      </div>
+  <main  class="main contact-section">
+	<form class="contact-form" action="https://form.taxi/s/jss611j1" method="POST">
+	  <p class="intro">Wir freuen uns auf Ihre Nachricht. Bitte füllen Sie das Formular aus.</p>
 
-      <div class="form-group">
-        <label for="email">E-Mail Adresse</label>
-        <input type="email" id="email" name="Email" placeholder="ihrname@email.de" required>
-      </div>
+	  
+	  <label for="name">Name</label>
+	  <input type="text" id="name" name="Name" placeholder="Ihr Name" required>
 
-      <div class="form-group">
-        <label for="message">Nachricht</label>
-        <textarea id="message" name="Nachricht" placeholder="Was ist Ihr Anliegen?" rows="6" required></textarea>
-      </div>
+	  <label for="email">E-Mail Adresse</label>
+	  <input type="email" id="email" name="Email" placeholder="ihrname@email.de" required>
 
-      <div class="form-group checkbox">
-        <label>
-          <input type="checkbox" name="Datenverarbeitung bestätigt" value="Ja" required>
-          Ich bin mit der Verarbeitung meiner Eingaben zum Zweck der Anfragebearbeitung einverstanden.
-        </label>
-      </div>
+	  <label for="message">Nachricht</label>
+	  <textarea id="message" name="Nachricht" placeholder="Was ist Ihr anliegen?" rows="6" required></textarea>
+	  
+	  
+	  <div class="checkbox">
+		<label>
+		<input type="checkbox" name="Datenverarbeitung bestätigt" value="Ja" required>
+		Ich bin mit der Verarbeitung meiner Eingaben zum Zweck der Anfragebearbeitung einverstanden.
+		</label>
+	  </div>
 
-      <button type="submit" class="submit-btn">Absenden</button>
-    </form>
-  </section>
-</main>
-<footer>
+	  <button type="submit" class="submit-btn">Absenden</button>
+	</form>
+  </main>
+  <footer>
     <a href="impressum.html">Impressum</a> | <a href="datenschutz.html">Datenschutz</a>
   </footer>
 </body>
