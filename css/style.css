@@ -209,7 +209,7 @@ footer {
   margin-bottom: 1.5rem;
   display: flex;
   align-items: flex-start;
-  gap: 0.5rem; /* Abstand zwischen Checkbox und Text */
+  gap: 0rem; /* Abstand zwischen Checkbox und Text */
   text-align: left;
   justify-content: flex-start;
 }
