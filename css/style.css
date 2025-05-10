@@ -208,13 +208,15 @@ footer {
   margin-top: 1.0rem;
   margin-bottom: 1.5rem;
   display: flex;
-  align-items: center;
-  justify-content: flex-start; /* Wichtig: links ausrichten */
-  text-align: left;            /* Falls es Text gibt, auch links */
+  align-items: flex-start;
+  gap: 0.5rem; /* Abstand zwischen Checkbox und Text */
+  text-align: left;
+  justify-content: flex-start;
 }
 
 .contact-form .checkbox input {
   transform: scale(1.25);
-  margin-right: 0.5rem; /* Abstand zum Labeltext */
+  margin-top: 0.15rem; /* leichte vertikale Korrektur, optional */
 }
+
 
