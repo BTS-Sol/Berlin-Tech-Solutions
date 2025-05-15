@@ -219,16 +219,12 @@ footer {
    ========================= */
 
 
-.contact-form .checkbox {
-  margin-top: 1rem;
+.contact-form .form-group {
   margin-bottom: 1.5rem;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem; /* Jetzt sinnvoller Abstand */
 }
 
-.contact-form .checkbox input[type="checkbox"] {
-  margin-top: 0.2rem; /* Optional: Vertikaler Ausgleich */
+.contact-form .form-group input[type="checkbox"] {
+  margin-right: 0.5rem;
 }
 
 
