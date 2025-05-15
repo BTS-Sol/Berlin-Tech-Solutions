@@ -194,7 +194,7 @@ footer {
 .contact-form .checkbox label {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  gap: 0.5rem;
   font-size: 0.9rem;
   color: #333;
 }
