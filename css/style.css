@@ -220,18 +220,16 @@ footer {
 
 
 .contact-form .checkbox {
-  margin-top: 1.0rem;
+  margin-top: 1rem;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: flex-start;
-  gap: 0rem; /* Abstand zwischen Checkbox und Text */
-  text-align: left;
-  justify-content: flex-start;
+  gap: 0.5rem; /* Jetzt sinnvoller Abstand */
 }
 
-.contact-form .checkbox input {
-  transform: scale(1.25);
-  margin-top: 0.15rem; /* leichte vertikale Korrektur, optional */
+.contact-form .checkbox input[type="checkbox"] {
+  margin-top: 0.2rem; /* Optional: Vertikaler Ausgleich */
 }
+
 
 
