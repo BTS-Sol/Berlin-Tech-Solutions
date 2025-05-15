@@ -206,5 +206,9 @@ footer {
   background-color: #003d66;
 }
 
+.contact-form input[type="checkbox"] {
+  display: block;  /* macht sie block-level, damit margin wirkt */
+  margin-left: 0;  /* ganz nach links */
+}
 
 
