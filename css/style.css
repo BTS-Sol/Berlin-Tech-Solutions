@@ -206,9 +206,16 @@ footer {
   background-color: #003d66;
 }
 
+.contact-form {
+  padding-left: 0; /* Entfernt eventuelles Innenpadding */
+}
+
 .contact-form input[type="checkbox"] {
-  display: block;  /* macht sie block-level, damit margin wirkt */
-  margin-left: 0;  /* ganz nach links */
+  margin-left: 0 !important;  /* Überschreibt Browser-Margin */
+  margin-right: 8px;           /* Abstand zwischen Checkbox und Label */
+  vertical-align: middle;      /* Optisch mittig zum Text */
+  cursor: pointer;             /* Hand-Cursor */
+  display: inline-block;
 }
 
 
