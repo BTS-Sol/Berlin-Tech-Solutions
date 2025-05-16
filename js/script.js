@@ -1,15 +1,3 @@
-document.addEventListener('DOMContentLoaded', () => {
-
-  const accordions = document.querySelectorAll('.accordion-header');
-  accordions.forEach(header => {
-    header.addEventListener('click', () => {
-      const content = header.nextElementSibling;
-      content.style.display = content.style.display === 'block' ? 'none' : 'block';
-    });
-  });
-});
-
-<script>
   window.addEventListener('load', () => {
     const preloader = document.getElementById('preloader');
     setTimeout(() => {
@@ -20,4 +8,4 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 500);
     }, 2000); // Wartezeit, bis der Preloader ausgeblendet wird
   });
-</script>
+
