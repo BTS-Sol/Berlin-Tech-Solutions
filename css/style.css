@@ -212,6 +212,7 @@ footer {
 }
 
 .contact-form input[type="checkbox"] {
+  left: 0;
   margin-left: 0 !important;  /* Überschreibt Browser-Margin */
   margin-right: 8px;           /* Abstand zwischen Checkbox und Label */
   vertical-align: left;      /* Optisch mittig zum Text */
