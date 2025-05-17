@@ -29,13 +29,14 @@ header, footer {
 }
 
 
-.logo2 {     
-	position: absolute;
+.logo2 {
+    position: absolute;
     top: 0;
     right: 0;
-    padding: 10px; /* Optional: Abstand vom Rand */
-    max-width: 9%;  /* Logo wird auf max. 15% der Fensterbreite begrenzt */
-    height: auto; /* Die Höhe passt sich automatisch der Breite an */
+    padding: 10px;
+    max-height: 95%;     /* Begrenzung auf die Höhe des Headers */
+    height: auto;
+    width: auto;          /* Bewahrt Seitenverhältnis */
 }
 
 .center-text {
