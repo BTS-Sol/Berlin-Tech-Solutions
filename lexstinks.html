@@ -69,6 +69,11 @@
 
   <div id="result"></div>
   <div id="tabelleContainer"></div>
+  
+  <button id="button">Klick mich</button>
+  <div id="finger">🖕</div>
+
+
 
   <script>
     function berechneNachkauf() {
@@ -126,6 +131,19 @@
       tableHTML += `</table>`;
       tabelleDiv.innerHTML = tableHTML;
     }
+    
+    const button = document.getElementById('button');
+    const finger = document.getElementById('finger');
+
+    button.addEventListener('click', () => {
+      finger.classList.add('show');
+
+      // Optional: Finger nach 2 Sekunden wieder ausblenden
+      setTimeout(() => {
+        finger.classList.remove('show');
+      }, 2000);
+    });
+
   </script>
 </body>
 </html>
