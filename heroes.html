@@ -131,55 +131,52 @@ function calculateDamage() {
     multiplier = 1 - (diff / (20 + diff));
   }
 
-  // Gesamter % Bonus vom Angreifer
-  const totalIncrease = (1 + (aInc1 + aInc2) / 100);
-  const totalDecrease = (1 - dDec / 100);
-
-  // Berechnung des Schadens
+  // Basis-Schaden ohne Boni
   const baseMin = aCount * minDmg * multiplier;
   const baseMax = aCount * maxDmg * multiplier;
 
-  const increasedMin = baseMin * totalIncrease;
-  const increasedMax = baseMax * totalIncrease;
+  const totalIncrease1 = 1 + aInc1 / 100;
+  const totalIncreaseBoth = 1 + (aInc1 + aInc2) / 100;
+  const totalDecrease = 1 - dDec / 100;
 
-  const finalMin = increasedMin * totalDecrease;
-  const finalMax = increasedMax * totalDecrease;
-  
-  // Glück und Pech
+  // Schaden mit nur Bonus 1
+  const dmgMin1 = baseMin * totalIncrease1 * totalDecrease;
+  const dmgMax1 = baseMax * totalIncrease1 * totalDecrease;
+
+  // Schaden mit beiden Boni
+  const finalMin = baseMin * totalIncreaseBoth * totalDecrease;
+  const finalMax = baseMax * totalIncreaseBoth * totalDecrease;
+
+  // Pech / Glück
   const luckyMin = finalMin * 2;
   const luckyMax = finalMax * 2;
-
   const unluckyMin = finalMin * 0.5;
   const unluckyMax = finalMax * 0.5;
 
-  // Elemental DMG Anetil
-  const elementaldmgMin = aCount * minDmg * (1+aInc2)
-  const elementaldmgMax = aCount * maxDmg * (1+aInc2)
-
-  const elementaldmgMinLuck = elementaldmgMin*2
-  const elementaldmgMaxLuck = elementaldmgMax*2
-
-  const elementaldmgMinUnluck = elementaldmgMin*0,5
-  const elementaldmgMaxUnluck = elementaldmgMax*0,5
-
-  // Tote berechnen
+  // Tote
   const killsMin = Math.floor(finalMin / dHP);
   const killsMax = Math.floor(finalMax / dHP);
-
   const killsUnlucky = Math.floor(unluckyMin / dHP);
   const killsLucky = Math.floor(luckyMax / dHP);
 
+  // Extra-Damage durch Bonus 2 berechnen
+  const extraDmgMin = finalMin - dmgMin1;
+  const extraDmgMax = finalMax - dmgMax1;
+
   document.getElementById('result').innerText =
-    `Schaden:\n` +
-    `• Mit Pech: ${unluckyMin.toFixed(2)} – ${unluckyMax.toFixed(2)}  Schaden davon (${elementaldmgMinUnluck.toFixed(2)} - ${elementaldmgMaxUnluck.toFixed(2)} Bonusschaden)\n` +
-    `• Normal: ${finalMin.toFixed(2)} – ${finalMax.toFixed(2)} Schaden davon (${elementaldmgMin.toFixed(2)} - ${elementaldmgMax.toFixed(2)} Bonusschaden)\n` +
-    `• Mit Glück: ${luckyMin.toFixed(2)} – ${luckyMax.toFixed(2)} Schaden davon (${elementaldmgMinLuck.toFixed(2)} - ${elementaldmgMaxLuck.toFixed(2)} Bonusschaden)\n\n` +
-    `Tote Einheiten (bei ${dHP} Leben):\n` +
-    `• Mit Pech: ${killsUnlucky} Einheiten\n` +
+    `📊 Schaden pro Runde:\n` +
+    `• Normal: ${finalMin.toFixed(2)} – ${finalMax.toFixed(2)} Schaden\n` +
+    `• Mit Pech: ${unluckyMin.toFixed(2)} – ${unluckyMax.toFixed(2)}\n` +
+    `• Mit Glück: ${luckyMin.toFixed(2)} – ${luckyMax.toFixed(2)}\n\n` +
+    `💀 Tote Einheiten (bei ${dHP} Leben):\n` +
     `• Normal: ${killsMin} – ${killsMax} Einheiten\n` +
-    `• Mit Glück: ${killsLucky} Einheiten`;
+    `• Mit Pech: ${killsUnlucky} Einheiten\n` +
+    `• Mit Glück: ${killsLucky} Einheiten\n\n` +
+    `➕ Zusätzlicher Schaden durch Bonus 2 (${aInc2}%):\n` +
+    `• ${extraDmgMin.toFixed(2)} – ${extraDmgMax.toFixed(2)} Schaden`;
 }
 </script>
+
 
 </body>
 </html>
