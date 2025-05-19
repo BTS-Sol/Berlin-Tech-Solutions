@@ -48,15 +48,15 @@
   <h2>Break-Even Nachkauf Rechner</h2>
 
   <label>1. Buy-In Kurs (ursprünglich in €):
-    <input type="number" id="buyIn" step="0.01">
+    <input type="number" id="buyIn" step="0.01" oninput="aktualisiereTabelle()">
   </label>
 
   <label>2. Anzahl Anteile (ursprünglich):
-    <input type="number" id="anzahl" step="1">
+    <input type="number" id="anzahl" step="1" oninput="aktualisiereTabelle()">
   </label>
 
   <label>3. Aktueller Kurs (in €):
-    <input type="number" id="aktuell" step="0.01">
+    <input type="number" id="aktuell" step="0.01" oninput="aktualisiereTabelle()">
   </label>
 
   <hr>
@@ -76,51 +76,55 @@
       const anzahl = parseFloat(document.getElementById('anzahl').value);
       const aktuell = parseFloat(document.getElementById('aktuell').value);
       const verkauf = parseFloat(document.getElementById('verkauf').value);
-
       const resultDiv = document.getElementById('result');
-      const tabelleDiv = document.getElementById('tabelleContainer');
 
       if (isNaN(buyIn) || isNaN(anzahl) || isNaN(aktuell) || isNaN(verkauf)) {
         resultDiv.textContent = "Bitte alle Felder korrekt ausfüllen.";
+        return;
+      }
+
+      const gesamtInvestAlt = buyIn * anzahl;
+      const nachkauf = (gesamtInvestAlt - verkauf * anzahl) / (verkauf - aktuell);
+
+      if (nachkauf < 0) {
+        resultDiv.textContent = "Ein Break-Even ist mit diesen Werten nicht möglich.";
+      } else {
+        resultDiv.textContent = `Du musst ca. ${nachkauf.toFixed(2)} Anteile zum aktuellen Kurs nachkaufen, um beim Verkaufskurs von ${verkauf.toFixed(2)} € auf Null zu kommen.`;
+      }
+    }
+
+    function aktualisiereTabelle() {
+      const buyIn = parseFloat(document.getElementById('buyIn').value);
+      const anzahl = parseFloat(document.getElementById('anzahl').value);
+      const aktuell = parseFloat(document.getElementById('aktuell').value);
+      const tabelleDiv = document.getElementById('tabelleContainer');
+
+      if (isNaN(buyIn) || isNaN(anzahl) || isNaN(aktuell) || aktuell <= 0) {
         tabelleDiv.innerHTML = "";
         return;
       }
 
       const gesamtInvestAlt = buyIn * anzahl;
 
-      const nachkauf = (gesamtInvestAlt - verkauf * anzahl) / (verkauf - aktuell);
+      let tableHTML = `<table>
+        <tr>
+          <th>Kurssteigerung</th>
+          <th>Neuer Kurs (€)</th>
+          <th>Erforderliche Nachkauf-Anteile</th>
+        </tr>`;
 
-      let resultText = "";
-
-      if (nachkauf < 0) {
-        resultText = "Ein Break-Even ist mit diesen Werten nicht möglich.";
-        tabelleDiv.innerHTML = "";
-      } else {
-        resultText = `Du musst ca. ${nachkauf.toFixed(2)} Anteile zum aktuellen Kurs nachkaufen, um beim Verkaufskurs von ${verkauf.toFixed(2)} € auf Null zu kommen.`;
-
-        // Tabelle generieren
-        let tableHTML = `<table>
-          <tr>
-            <th>Kurssteigerung</th>
-            <th>Neuer Kurs (€)</th>
-            <th>Erforderliche Nachkauf-Anteile</th>
-          </tr>`;
-
-        for (let faktor = 1.1; faktor <= 1.5; faktor += 0.1) {
-          const neuerKurs = aktuell * faktor;
-          const benoetigteAnteile = (gesamtInvestAlt - neuerKurs * anzahl) / (neuerKurs - aktuell);
-          tableHTML += `<tr>
-            <td>${((faktor - 1) * 100).toFixed(0)}%</td>
-            <td>${neuerKurs.toFixed(2)}</td>
-            <td>${benoetigteAnteile > 0 ? benoetigteAnteile.toFixed(2) : "–"}</td>
-          </tr>`;
-        }
-
-        tableHTML += `</table>`;
-        tabelleDiv.innerHTML = tableHTML;
+      for (let faktor = 1.1; faktor <= 1.5; faktor += 0.1) {
+        const neuerKurs = aktuell * faktor;
+        const benoetigteAnteile = (gesamtInvestAlt - neuerKurs * anzahl) / (neuerKurs - aktuell);
+        tableHTML += `<tr>
+          <td>${((faktor - 1) * 100).toFixed(0)}%</td>
+          <td>${neuerKurs.toFixed(2)}</td>
+          <td>${benoetigteAnteile > 0 ? benoetigteAnteile.toFixed(2) : "–"}</td>
+        </tr>`;
       }
 
-      resultDiv.textContent = resultText;
+      tableHTML += `</table>`;
+      tabelleDiv.innerHTML = tableHTML;
     }
   </script>
 </body>
