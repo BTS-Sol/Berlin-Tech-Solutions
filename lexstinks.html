@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Break-Even Nachkauf Rechner</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 30px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Break-Even Nachkauf Rechner</h2>
+
+  <label>1. Buy-In Kurs (ursprünglich in €):
+    <input type="number" id="buyIn" step="0.01">
+  </label>
+
+  <label>2. Anzahl Anteile (ursprünglich):
+    <input type="number" id="anzahl" step="1">
+  </label>
+
+  <label>3. Aktueller Kurs (in €):
+    <input type="number" id="aktuell" step="0.01">
+  </label>
+
+  <hr>
+
+  <label>4. Gewünschter Verkaufskurs (in €):
+    <input type="number" id="verkauf" step="0.01">
+  </label>
+
+  <button onclick="berechneNachkauf()">Berechnen</button>
+
+  <div id="result"></div>
+
+  <script>
+    function berechneNachkauf() {
+      const buyIn = parseFloat(document.getElementById('buyIn').value);
+      const anzahl = parseFloat(document.getElementById('anzahl').value);
+      const aktuell = parseFloat(document.getElementById('aktuell').value);
+      const verkauf = parseFloat(document.getElementById('verkauf').value);
+
+      if (isNaN(buyIn) || isNaN(anzahl) || isNaN(aktuell) || isNaN(verkauf)) {
+        document.getElementById('result').textContent = "Bitte alle Felder korrekt ausfüllen.";
+        return;
+      }
+
+      const gesamtInvestAlt = buyIn * anzahl;
+
+      // Ziel: Gesamtinvestition / Gesamtanzahl = Verkaufskurs
+      // => (buyIn * anzahl + nachkauf * aktuell) / (anzahl + nachkauf) = verkauf
+      // Auflösen nach nachkauf:
+      const nachkauf = (gesamtInvestAlt - verkauf * anzahl) / (verkauf - aktuell);
+
+      let resultText = "";
+
+      if (nachkauf < 0) {
+        resultText = "Ein Break-Even ist mit diesen Werten nicht möglich.";
+      } else {
+        resultText = `Du musst ca. ${nachkauf.toFixed(2)} Anteile zum aktuellen Kurs nachkaufen, um beim Verkaufskurs von ${verkauf.toFixed(2)} € auf Null zu kommen.`;
+      }
+
+      document.getElementById('result').textContent = resultText;
+    }
+  </script>
+</body>
+</html>
