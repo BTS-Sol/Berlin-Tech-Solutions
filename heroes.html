@@ -144,13 +144,23 @@ function calculateDamage() {
 
   const finalMin = increasedMin * totalDecrease;
   const finalMax = increasedMax * totalDecrease;
-
+  
   // Glück und Pech
   const luckyMin = finalMin * 2;
   const luckyMax = finalMax * 2;
 
   const unluckyMin = finalMin * 0.5;
   const unluckyMax = finalMax * 0.5;
+
+  // Elemental DMG Anetil
+  const elementaldmgMin = aCount * minDmg * (1+aInc2)
+  const elementaldmgMax = aCount * maxDmg * (1+aInc2)
+
+  const elementaldmgMinLuck = elementaldmgMin*2
+  const elementaldmgMaxLuck = elementaldmgMax*2
+
+  const elementaldmgMinUnluck = elementaldmgMin*0,5
+  const elementaldmgMaxUnluck = elementaldmgMax*0,5
 
   // Tote berechnen
   const killsMin = Math.floor(finalMin / dHP);
@@ -161,12 +171,12 @@ function calculateDamage() {
 
   document.getElementById('result').innerText =
     `Schaden:\n` +
-    `• Normal: ${finalMin.toFixed(2)} – ${finalMax.toFixed(2)} Schaden\n` +
-    `• Mit Pech: ${unluckyMin.toFixed(2)} – ${unluckyMax.toFixed(2)}\n` +
-    `• Mit Glück: ${luckyMin.toFixed(2)} – ${luckyMax.toFixed(2)}\n\n` +
+    `• Mit Pech: ${unluckyMin.toFixed(2)} – ${unluckyMax.toFixed(2)}  Schaden davon (${elementaldmgMinUnluck.toFixed(2)} - ${elementaldmgMaxUnluck.toFixed(2)} Bonusschaden)\n` +
+    `• Normal: ${finalMin.toFixed(2)} – ${finalMax.toFixed(2)} Schaden davon (${elementaldmgMin.toFixed(2)} - ${elementaldmgMax.toFixed(2)} Bonusschaden)\n` +
+    `• Mit Glück: ${luckyMin.toFixed(2)} – ${luckyMax.toFixed(2)} Schaden davon (${elementaldmgMinLuck.toFixed(2)} - ${elementaldmgMaxLuck.toFixed(2)} Bonusschaden)\n\n` +
     `Tote Einheiten (bei ${dHP} Leben):\n` +
-    `• Normal: ${killsMin} – ${killsMax} Einheiten\n` +
     `• Mit Pech: ${killsUnlucky} Einheiten\n` +
+    `• Normal: ${killsMin} – ${killsMax} Einheiten\n` +
     `• Mit Glück: ${killsLucky} Einheiten`;
 }
 </script>
