@@ -7,7 +7,7 @@
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      max-width: 600px;
+      max-width: 700px;
       margin: auto;
     }
     label {
@@ -28,6 +28,19 @@
     #result {
       margin-top: 30px;
       font-weight: bold;
+    }
+    table {
+      margin-top: 20px;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
     }
   </style>
 </head>
@@ -55,6 +68,7 @@
   <button onclick="berechneNachkauf()">Berechnen</button>
 
   <div id="result"></div>
+  <div id="tabelleContainer"></div>
 
   <script>
     function berechneNachkauf() {
@@ -63,27 +77,50 @@
       const aktuell = parseFloat(document.getElementById('aktuell').value);
       const verkauf = parseFloat(document.getElementById('verkauf').value);
 
+      const resultDiv = document.getElementById('result');
+      const tabelleDiv = document.getElementById('tabelleContainer');
+
       if (isNaN(buyIn) || isNaN(anzahl) || isNaN(aktuell) || isNaN(verkauf)) {
-        document.getElementById('result').textContent = "Bitte alle Felder korrekt ausfüllen.";
+        resultDiv.textContent = "Bitte alle Felder korrekt ausfüllen.";
+        tabelleDiv.innerHTML = "";
         return;
       }
 
       const gesamtInvestAlt = buyIn * anzahl;
 
-      // Ziel: Gesamtinvestition / Gesamtanzahl = Verkaufskurs
-      // => (buyIn * anzahl + nachkauf * aktuell) / (anzahl + nachkauf) = verkauf
-      // Auflösen nach nachkauf:
       const nachkauf = (gesamtInvestAlt - verkauf * anzahl) / (verkauf - aktuell);
 
       let resultText = "";
 
       if (nachkauf < 0) {
         resultText = "Ein Break-Even ist mit diesen Werten nicht möglich.";
+        tabelleDiv.innerHTML = "";
       } else {
         resultText = `Du musst ca. ${nachkauf.toFixed(2)} Anteile zum aktuellen Kurs nachkaufen, um beim Verkaufskurs von ${verkauf.toFixed(2)} € auf Null zu kommen.`;
+
+        // Tabelle generieren
+        let tableHTML = `<table>
+          <tr>
+            <th>Kurssteigerung</th>
+            <th>Neuer Kurs (€)</th>
+            <th>Erforderliche Nachkauf-Anteile</th>
+          </tr>`;
+
+        for (let faktor = 1.1; faktor <= 1.5; faktor += 0.1) {
+          const neuerKurs = aktuell * faktor;
+          const benoetigteAnteile = (gesamtInvestAlt - neuerKurs * anzahl) / (neuerKurs - aktuell);
+          tableHTML += `<tr>
+            <td>${((faktor - 1) * 100).toFixed(0)}%</td>
+            <td>${neuerKurs.toFixed(2)}</td>
+            <td>${benoetigteAnteile > 0 ? benoetigteAnteile.toFixed(2) : "–"}</td>
+          </tr>`;
+        }
+
+        tableHTML += `</table>`;
+        tabelleDiv.innerHTML = tableHTML;
       }
 
-      document.getElementById('result').textContent = resultText;
+      resultDiv.textContent = resultText;
     }
   </script>
 </body>
