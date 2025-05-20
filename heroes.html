@@ -162,8 +162,8 @@ function calculateDamage() {
   const killsLuckyMax = Math.floor(luckyMax / dHP);
 
   // Extra-Damage durch Bonus 2 berechnen
-  const extraDmgMin = finalMin - dmgMin1;
-  const extraDmgMax = finalMax - dmgMax1;
+  const extraDmgMin = finalMin - finalMin/(1+(aInc2/100));
+  const extraDmgMax = finalMax - finalMax/(1+(aInc2/100));
 
   document.getElementById('result').innerText =
     `📊 Schaden pro Runde:\n` +
