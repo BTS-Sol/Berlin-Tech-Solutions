@@ -35,6 +35,11 @@
       color: green;
       font-weight: bold;
     }
+    #scanner {
+      width: 300px;
+      height: 300px;
+      display: none;
+    }
     hr {
       margin: 40px 0;
     }
@@ -50,7 +55,7 @@
 
   <!-- Schlüssel scannen -->
   <button onclick="startScan()">2) Schlüssel scannen</button>
-  <video id="video" autoplay style="display:none;"></video>
+  <div id="scanner"></div>
   <div id="scan-result"></div>
 
   <hr>
@@ -69,9 +74,11 @@
   <button onclick="decryptText()">Text entschlüsseln</button>
   <div id="decryption-output"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <!-- Bibliotheken -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode"></script>
 
+  <!-- Hauptlogik -->
   <script>
     let aesKeyRaw = null;
     let aesCryptoKeyEncrypt = null;
@@ -84,15 +91,22 @@
       // QR anzeigen
       const qrContainer = document.getElementById('qrcode');
       qrContainer.innerHTML = '';
-      QRCode.toCanvas(document.createElement("canvas"), base64Key, function (err, canvas) {
-        if (err) console.error(err);
-        qrContainer.appendChild(canvas);
-
-        const link = document.getElementById('download-link');
-        link.href = canvas.toDataURL();
-        link.download = "aes_qr_key.png";
-        link.style.display = 'inline';
+      const qrCode = new QRCode(qrContainer, {
+        text: base64Key,
+        width: 256,
+        height: 256
       });
+
+      // Download-Link generieren
+      setTimeout(() => {
+        const img = qrContainer.querySelector('img');
+        if (img) {
+          const link = document.getElementById('download-link');
+          link.href = img.src;
+          link.download = "aes_qr_key.png";
+          link.style.display = 'inline';
+        }
+      }, 500);
 
       aesCryptoKeyEncrypt = await crypto.subtle.importKey(
         "raw",
@@ -102,7 +116,6 @@
         ["encrypt"]
       );
 
-      // Optional für Entschlüsselung direkt aktivieren
       aesCryptoKeyDecrypt = await crypto.subtle.importKey(
         "raw",
         aesKeyRaw,
@@ -113,10 +126,10 @@
     }
 
     function startScan() {
-      const video = document.getElementById('video');
-      video.style.display = 'block';
+      const scannerDiv = document.getElementById('scanner');
+      scannerDiv.style.display = 'block';
+      const qrCodeScanner = new Html5Qrcode("scanner");
 
-      const qrCodeScanner = new Html5Qrcode("video");
       Html5Qrcode.getCameras().then(devices => {
         if (devices.length) {
           qrCodeScanner.start(
@@ -126,28 +139,26 @@
               try {
                 aesKeyRaw = Uint8Array.from(atob(decodedText), c => c.charCodeAt(0));
                 aesCryptoKeyEncrypt = await crypto.subtle.importKey(
-                  "raw",
-                  aesKeyRaw,
-                  { name: "AES-GCM" },
-                  false,
-                  ["encrypt"]
+                  "raw", aesKeyRaw, { name: "AES-GCM" }, false, ["encrypt"]
                 );
                 aesCryptoKeyDecrypt = await crypto.subtle.importKey(
-                  "raw",
-                  aesKeyRaw,
-                  { name: "AES-GCM" },
-                  false,
-                  ["decrypt"]
+                  "raw", aesKeyRaw, { name: "AES-GCM" }, false, ["decrypt"]
                 );
                 document.getElementById('scan-result').textContent = "✔️ Schlüssel erfolgreich eingelesen!";
-                qrCodeScanner.stop().then(() => video.style.display = "none");
+                qrCodeScanner.stop().then(() => scannerDiv.style.display = "none");
               } catch (e) {
                 alert("Ungültiger Schlüssel");
               }
             },
-            error => {}
+            error => {
+              // Fehler beim Lesen ignorieren
+            }
           );
+        } else {
+          alert("Keine Kamera gefunden");
         }
+      }).catch(err => {
+        alert("Kamera konnte nicht gestartet werden: " + err);
       });
     }
 
