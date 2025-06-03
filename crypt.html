@@ -306,7 +306,7 @@
       try {
         const decryptedBuffer = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, cryptoKey, cipherBuffer);
         const decryptedText = new TextDecoder().decode(decryptedBuffer);
-        document.getElementById("inputText").value = decryptedText;
+        document.getElementById("outputText").value = decryptedText;
       } catch (err) {
         console.error(err);
         alert("Fehler beim Entschlüsseln des Textes!");
