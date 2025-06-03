@@ -285,7 +285,7 @@
 
     // Entschlüsseln
     async function decryptText() {
-      const encryptedData = document.getElementById("outputText").value.split(":");
+      const encryptedData = document.getElementById("inputText").value.split(":");
       if (encryptedData.length !== 2) {
         alert("Ungültiges Format des verschlüsselten Textes!");
         return;
