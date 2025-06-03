@@ -1,226 +1,349 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <title>QR-Verschlüsselung & Entschlüsselung</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verschlüsseltes Kontaktverzeichnis</title>
+  <!-- CDN Einbindung der Bibliotheken -->
+  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   <style>
+    /* Einfaches responsives Design */
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f9f9f9;
-      max-width: 800px;
+      max-width: 600px;
       margin: auto;
+      padding: 1rem;
+      text-align: center;
     }
-    button {
-      padding: 10px 20px;
-      margin: 10px 0;
-    }
-    canvas, video {
-      margin-top: 10px;
-      max-width: 300px;
-      display: block;
+    button, input, textarea, select {
+      margin: 5px;
+      padding: 0.5rem;
+      font-size: 1rem;
     }
     textarea {
       width: 100%;
       height: 100px;
-      margin-top: 10px;
+      resize: vertical;
     }
-    #output, #decryption-output {
-      margin-top: 20px;
-      font-weight: bold;
-      white-space: pre-wrap;
+    #qrCode, #reader {
+      margin: 1rem auto;
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      width: 260px;
+      height: 260px;
     }
-    #scan-result {
-      margin-top: 10px;
-      color: green;
-      font-weight: bold;
-    }
-    #scanner {
-      width: 300px;
-      height: 300px;
-      display: none;
-    }
-    hr {
-      margin: 40px 0;
+    h1, h2 {
+      margin-top: 1.5rem;
     }
   </style>
 </head>
 <body>
-  <h1>QR-Verschlüsselung & Entschlüsselung</h1>
+  <h1>🔐 AES-Schlüssel-Generierung</h1>
+  <button id="generateKey">Erzeuge AES-Schlüssel</button>
+  <br>
+  <input type="text" id="aesKey" readonly placeholder="Base64 AES-Schlüssel">
+  <div id="qrCode"></div>
 
-  <!-- Schlüssel generieren -->
-  <button onclick="generateKey()">1) Schlüssel generieren (QR)</button>
-  <div id="qrcode"></div>
-  <a id="download-link" style="display:none;">QR-Code herunterladen</a>
+  <h2>📁 Kontaktverzeichnis</h2>
+  <!-- Upload/Download und Verzeichnis-Management -->
+  <input type="file" id="uploadFile">
+  <br>
+  <button id="newDirectory">Neues Verzeichnis erstellen</button>
+  <button id="downloadDirectory">Verzeichnis speichern</button>
+  <br>
+  <input type="password" id="directoryPassword" placeholder="Passwort für Verzeichnis">
 
-  <!-- Schlüssel scannen -->
-  <button onclick="startScan()">2) Schlüssel scannen</button>
-  <div id="scanner"></div>
-  <div id="scan-result"></div>
+  <h2>➕ Kontakt hinzufügen</h2>
+  <!-- QR-Scan Bereich -->
+  <div id="reader"></div>
+  <input type="text" id="contactName" placeholder="Kontaktname">
+  <button id="addContact">Kontakt speichern</button>
 
-  <hr>
+  <h2>🔄 Text verschlüsseln/entschlüsseln</h2>
+  <textarea id="inputText" placeholder="Eingabetext"></textarea>
+  <br>
+  <select id="contactList">
+    <option value="">-- Wähle Kontakt --</option>
+  </select>
+  <br>
+  <button id="encryptText">Text verschlüsseln</button>
+  <button id="decryptText">Text entschlüsseln</button>
+  <br>
+  <textarea id="outputText" readonly placeholder="Verschlüsselter/entschlüsselter Text"></textarea>
 
-  <!-- Text verschlüsseln -->
-  <h2>Verschlüsseln</h2>
-  <textarea id="text-input" placeholder="Text hier eingeben..."></textarea>
-  <button onclick="encryptText()">Text verschlüsseln</button>
-  <div id="output"></div>
-
-  <hr>
-
-  <!-- Text entschlüsseln -->
-  <h2>Entschlüsseln</h2>
-  <textarea id="encrypted-input" placeholder='{"iv":"...","data":"..."}'></textarea>
-  <button onclick="decryptText()">Text entschlüsseln</button>
-  <div id="decryption-output"></div>
-
-  <!-- Bibliotheken -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://unpkg.com/html5-qrcode"></script>
-
-  <!-- Hauptlogik -->
   <script>
-    let aesKeyRaw = null;
-    let aesCryptoKeyEncrypt = null;
-    let aesCryptoKeyDecrypt = null;
+    /***********************
+     * Dienstprogramme
+     ***********************/
+    function arrayBufferToBase64(buffer) {
+      let binary = '';
+      const bytes = new Uint8Array(buffer);
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return window.btoa(binary);
+    }
 
-    async function generateKey() {
-      aesKeyRaw = crypto.getRandomValues(new Uint8Array(16));
-      const base64Key = btoa(String.fromCharCode(...aesKeyRaw));
-
-      // QR anzeigen
-      const qrContainer = document.getElementById('qrcode');
-      qrContainer.innerHTML = '';
-      const qrCode = new QRCode(qrContainer, {
-        text: base64Key,
-        width: 256,
-        height: 256
-      });
-
-      // Download-Link generieren
-      setTimeout(() => {
-        const img = qrContainer.querySelector('img');
-        if (img) {
-          const link = document.getElementById('download-link');
-          link.href = img.src;
-          link.download = "aes_qr_key.png";
-          link.style.display = 'inline';
-        }
-      }, 500);
-
-      aesCryptoKeyEncrypt = await crypto.subtle.importKey(
-        "raw",
-        aesKeyRaw,
-        { name: "AES-GCM" },
-        false,
-        ["encrypt"]
+    function base64ToArrayBuffer(base64) {
+      const binary = window.atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return bytes;
+    }
+    
+    async function deriveKey(password, salt) {
+      const enc = new TextEncoder();
+      const keyMaterial = await crypto.subtle.importKey(
+          "raw",
+          enc.encode(password),
+          { name: "PBKDF2" },
+          false,
+          ["deriveKey"]
       );
-
-      aesCryptoKeyDecrypt = await crypto.subtle.importKey(
-        "raw",
-        aesKeyRaw,
-        { name: "AES-GCM" },
+      return crypto.subtle.deriveKey(
+        {
+          name: "PBKDF2",
+          salt: salt,
+          iterations: 100000,
+          hash: "SHA-256"
+        },
+        keyMaterial,
+        { name: "AES-GCM", length: 256 },
         false,
-        ["decrypt"]
+        ["encrypt", "decrypt"]
       );
     }
 
-    function startScan() {
-      const scannerDiv = document.getElementById('scanner');
-      scannerDiv.style.display = 'block';
-      const qrCodeScanner = new Html5Qrcode("scanner");
+    /***********************
+     * 1. AES-Schlüssel-Generierung & QR-Code
+     ***********************/
+    async function generateAESKey() {
+      // Generiere AES-GCM Schlüssel (256 Bit)
+      const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
+      const rawKey = await crypto.subtle.exportKey("raw", key);
+      const base64Key = arrayBufferToBase64(rawKey);
+      document.getElementById("aesKey").value = base64Key;
+      
+      // Erzeuge QR-Code mit der qrcode.min.js Library
+      document.getElementById("qrCode").innerHTML = "";
+      let qr = qrcode(0, 'L'); // Version 0 und niedrige Fehlerkorrektur
+      qr.addData(base64Key);
+      qr.make();
+      document.getElementById("qrCode").innerHTML = qr.createImgTag();
+    }
+    document.getElementById("generateKey").addEventListener("click", generateAESKey);
 
-      Html5Qrcode.getCameras().then(devices => {
-        if (devices.length) {
-          qrCodeScanner.start(
-            { facingMode: "environment" },
-            { fps: 10, qrbox: 250 },
-            async (decodedText) => {
-              try {
-                aesKeyRaw = Uint8Array.from(atob(decodedText), c => c.charCodeAt(0));
-                aesCryptoKeyEncrypt = await crypto.subtle.importKey(
-                  "raw", aesKeyRaw, { name: "AES-GCM" }, false, ["encrypt"]
-                );
-                aesCryptoKeyDecrypt = await crypto.subtle.importKey(
-                  "raw", aesKeyRaw, { name: "AES-GCM" }, false, ["decrypt"]
-                );
-                document.getElementById('scan-result').textContent = "✔️ Schlüssel erfolgreich eingelesen!";
-                qrCodeScanner.stop().then(() => scannerDiv.style.display = "none");
-              } catch (e) {
-                alert("Ungültiger Schlüssel");
-              }
-            },
-            error => {
-              // Fehler beim Lesen ignorieren
-            }
-          );
-        } else {
-          alert("Keine Kamera gefunden");
-        }
-      }).catch(err => {
-        alert("Kamera konnte nicht gestartet werden: " + err);
-      });
+    /***********************
+     * 2. Kontaktverzeichnis (lokal, verschlüsselt)
+     ***********************/
+    let directory = {}; // Enthält alle Kontakte als { kontaktname: "base64_AES_KEY" }
+
+    // Aktualisiert das Dropdown mit allen vorhandenen Kontakten.
+    function updateContactList() {
+      const select = document.getElementById("contactList");
+      select.innerHTML = '<option value="">-- Wähle Kontakt --</option>';
+      for (const name in directory) {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        select.appendChild(option);
+      }
     }
 
-    async function encryptText() {
-      const text = document.getElementById("text-input").value;
-      if (!aesCryptoKeyEncrypt) {
-        alert("Bitte zuerst einen Schlüssel generieren oder scannen.");
+    // Neues Verzeichnis initialisieren
+    function createNewDirectory() {
+      directory = {};
+      updateContactList();
+      alert("Neues Verzeichnis erstellt!");
+    }
+    document.getElementById("newDirectory").addEventListener("click", createNewDirectory);
+
+    // Download (Verschlüsseln des Verzeichnisses mit Passwort)
+    async function downloadDirectory() {
+      if (Object.keys(directory).length === 0) {
+        alert("Verzeichnis ist leer!");
         return;
       }
+      const password = document.getElementById("directoryPassword").value;
+      if (!password) {
+        alert("Bitte vergib ein Passwort im entsprechenden Feld!");
+        return;
+      }
+      const dataStr = JSON.stringify(directory);
+      const enc = new TextEncoder();
+      const data = enc.encode(dataStr);
+      
+      // Erzeuge zufälliges Salt (16 Byte) und IV (12 Byte)
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = await deriveKey(password, salt);
+      
+      try {
+        const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, data);
+        // Erstelle einen String im Format: base64(salt):base64(iv):base64(ciphertext)
+        const fileContent = arrayBufferToBase64(salt) + ":" + arrayBufferToBase64(iv) + ":" + arrayBufferToBase64(encrypted);
+        const blob = new Blob([fileContent], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        
+        // Erzeuge dynamisch einen Download-Link
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "kontaktverzeichnis.txt";
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error(err);
+        alert("Fehler beim Verschlüsseln des Verzeichnisses!");
+      }
+    }
+    document.getElementById("downloadDirectory").addEventListener("click", downloadDirectory);
+
+    // Upload (Laden eines verschlüsselten Verzeichnisses)
+    document.getElementById("uploadFile").addEventListener("change", async function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async function(event) {
+        const content = event.target.result;
+        const parts = content.split(":");
+        if (parts.length !== 3) {
+          alert("Ungültiges Verzeichnisformat!");
+          return;
+        }
+        const [saltB64, ivB64, cipherB64] = parts;
+        const salt = base64ToArrayBuffer(saltB64);
+        const iv = base64ToArrayBuffer(ivB64);
+        const cipherBuffer = base64ToArrayBuffer(cipherB64);
+        const password = document.getElementById("directoryPassword").value;
+        if (!password) {
+          alert("Bitte das Passwort im entsprechenden Feld eingeben!");
+          return;
+        }
+        const key = await deriveKey(password, salt);
+        try {
+          const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, cipherBuffer);
+          const dec = new TextDecoder();
+          directory = JSON.parse(dec.decode(decrypted));
+          updateContactList();
+          alert("Verzeichnis erfolgreich geladen!");
+        } catch (err) {
+          console.error(err);
+          alert("Fehler beim Entschlüsseln des Verzeichnisses (falsches Passwort?)!");
+        }
+      };
+      reader.readAsText(file);
+      // Setze den File-Input zurück, wenn du ihn erneut nutzen möchtest.
+      e.target.value = "";
+    });
+
+    /***********************
+     * 3. Kontakt hinzufügen (via QR-Code Scan)
+     ***********************/
+    function addContact() {
+      const name = document.getElementById("contactName").value;
+      const key = document.getElementById("aesKey").value;
+      if (!name || !key) {
+        alert("Bitte sowohl einen Kontaktname als auch einen Schlüssel (QR-Scan oder Schlüssel generieren) bereitstellen!");
+        return;
+      }
+      directory[name] = key;
+      updateContactList();
+      alert(`Kontakt "${name}" hinzugefügt!`);
+    }
+    document.getElementById("addContact").addEventListener("click", addContact);
+
+    /***********************
+     * 4. Text Verschlüsselung / Entschlüsselung
+     ***********************/
+    // Verschlüsseln
+    async function encryptText() {
+      const text = document.getElementById("inputText").value;
+      const contact = document.getElementById("contactList").value;
+      if (!contact || !text) {
+        alert("Bitte wähle einen Kontakt aus und gib einen Text ein!");
+        return;
+      }
+      const keyB64 = directory[contact];
+      const keyBytes = base64ToArrayBuffer(keyB64);
+      const cryptoKey = await crypto.subtle.importKey("raw", keyBytes, { name: "AES-GCM" }, false, ["encrypt"]);
 
       const iv = crypto.getRandomValues(new Uint8Array(12));
-      const encoded = new TextEncoder().encode(text);
-
       try {
-        const ciphertext = await crypto.subtle.encrypt(
-          { name: "AES-GCM", iv },
-          aesCryptoKeyEncrypt,
-          encoded
-        );
-
-        const output = {
-          iv: btoa(String.fromCharCode(...iv)),
-          data: btoa(String.fromCharCode(...new Uint8Array(ciphertext)))
-        };
-
-        document.getElementById("output").textContent = "Verschlüsselter Text (JSON):\n" + JSON.stringify(output, null, 2);
-      } catch (e) {
-        alert("Verschlüsselung fehlgeschlagen: " + e.message);
+        const encryptedBuffer = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, cryptoKey, new TextEncoder().encode(text));
+        // Ausgabeformat: base64(iv):base64(ciphertext)
+        const output = arrayBufferToBase64(iv) + ":" + arrayBufferToBase64(encryptedBuffer);
+        document.getElementById("outputText").value = output;
+      } catch (err) {
+        console.error(err);
+        alert("Fehler beim Verschlüsseln des Textes!");
       }
     }
+    document.getElementById("encryptText").addEventListener("click", encryptText);
 
+    // Entschlüsseln
     async function decryptText() {
-      const input = document.getElementById("encrypted-input").value.trim();
-      if (!aesCryptoKeyDecrypt) {
-        alert("Bitte zuerst einen Schlüssel scannen.");
+      const encryptedData = document.getElementById("outputText").value.split(":");
+      if (encryptedData.length !== 2) {
+        alert("Ungültiges Format des verschlüsselten Textes!");
         return;
       }
+      const [ivB64, cipherB64] = encryptedData;
+      const iv = base64ToArrayBuffer(ivB64);
+      const cipherBuffer = base64ToArrayBuffer(cipherB64);
 
-      let parsed;
-      try {
-        parsed = JSON.parse(input);
-      } catch (e) {
-        alert("Ungültiges JSON.");
+      const contact = document.getElementById("contactList").value;
+      if (!contact) {
+        alert("Bitte wähle einen Kontakt aus!");
         return;
       }
+      const keyB64 = directory[contact];
+      const keyBytes = base64ToArrayBuffer(keyB64);
+      const cryptoKey = await crypto.subtle.importKey("raw", keyBytes, { name: "AES-GCM" }, false, ["decrypt"]);
 
       try {
-        const iv = Uint8Array.from(atob(parsed.iv), c => c.charCodeAt(0));
-        const data = Uint8Array.from(atob(parsed.data), c => c.charCodeAt(0));
-
-        const decrypted = await crypto.subtle.decrypt(
-          { name: "AES-GCM", iv },
-          aesCryptoKeyDecrypt,
-          data
-        );
-
-        const decoded = new TextDecoder().decode(decrypted);
-        document.getElementById("decryption-output").textContent = "🔓 Entschlüsselter Text:\n" + decoded;
-      } catch (e) {
-        alert("Entschlüsselung fehlgeschlagen: " + e.message);
+        const decryptedBuffer = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, cryptoKey, cipherBuffer);
+        const decryptedText = new TextDecoder().decode(decryptedBuffer);
+        document.getElementById("inputText").value = decryptedText;
+      } catch (err) {
+        console.error(err);
+        alert("Fehler beim Entschlüsseln des Textes!");
       }
     }
+    document.getElementById("decryptText").addEventListener("click", decryptText);
+
+    /***********************
+     * 3. QR-Code Scanner initialisieren (für Kontakt hinzufügen)
+     ***********************/
+    // Beim Laden der Seite den Scanner im Element "reader" starten.
+    window.addEventListener("DOMContentLoaded", () => {
+      const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+        // Nach erfolgreichem Scan wird der dekodierte Text (AES-Schlüssel) in das entsprechende Feld eingetragen.
+        document.getElementById("aesKey").value = decodedText;
+        // Falls gewünscht, kann hier auch der QR-Code im Ausgabebereich aktualisiert werden.
+      };
+
+      const config = { fps: 10, qrbox: 250 };
+      Html5Qrcode.getCameras().then(cameras => {
+        if (cameras && cameras.length) {
+          const cameraId = cameras[0].id;
+          const html5QrCode = new Html5Qrcode("reader");
+          html5QrCode.start(
+            cameraId, 
+            config,
+            qrCodeSuccessCallback
+          ).catch(err => {
+            console.error("QR-Code Scan konnte nicht gestartet werden.", err);
+          });
+        } else {
+          alert("Keine Kamera gefunden!");
+        }
+      }).catch(err => {
+        console.error("Fehler beim Zugriff auf Kameras.", err);
+      });
+    });
   </script>
 </body>
 </html>
