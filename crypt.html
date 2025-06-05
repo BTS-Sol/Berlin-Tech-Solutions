@@ -1,81 +1,271 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verschlüsseltes Kontaktverzeichnis</title>
-  <!-- CDN Einbindung der Bibliotheken -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🔐 Verschlüsseltes Kontaktverzeichnis</title>
+
+  <!-- Externe Bibliotheken -->
   <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <!-- Grundlegendes Reset & Variablen -->
   <style>
-    /* Einfaches responsives Design */
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: auto;
-      padding: 1rem;
-      text-align: center;
+    :root {
+      /* Farbpalette */
+      --primary-color: #4F46E5;      /* Indigo-600 */
+      --primary-light: #6366F1;      /* Indigo-500 */
+      --accent-color: #10B981;       /* Emerald-500 */
+      --bg-light: #F9FAFB;           /* Grau-50 */
+      --card-bg: #FFFFFF;            /* Weiß */
+      --text-color: #111827;         /* Grau-900 */
+      --text-muted: #6B7280;         /* Grau-500 */
+      --border-radius: 0.5rem;       /* 8px */
+      --shadow-light: rgba(0, 0, 0, 0.05);
+      --shadow-medium: rgba(0, 0, 0, 0.1);
     }
-    button, input, textarea, select {
-      margin: 5px;
-      padding: 0.5rem;
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-color);
+      line-height: 1.5;
+      display: flex;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    /* Hauptcontainer */
+    .container {
+      max-width: 700px;
+      width: 100%;
+    }
+
+    h1, h2 {
+      color: var(--primary-color);
+      margin-bottom: 0.75rem;
+    }
+    h2 {
+      margin-top: 1.5rem;
+      font-size: 1.25rem;
+    }
+
+    /* Card-Layout */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 4px var(--shadow-light), 0 4px 6px var(--shadow-medium);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: #FFFFFF;
+      font-weight: 500;
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 0.6rem 1.25rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      text-decoration: none;
       font-size: 1rem;
     }
-    textarea {
-      width: 100%;
-      height: 100px;
-      resize: vertical;
+    .btn:hover {
+      background-color: var(--primary-light);
     }
+    .btn:disabled {
+      background-color: #A5B4FC;
+      cursor: not-allowed;
+    }
+
+    /* Formularelemente */
+    .form-group {
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #D1D5DB;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      color: var(--text-color);
+      background-color: #FFFFFF;
+     .transition: border-color 0.2s ease;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* QR-Code & Scannerbereich */
     #qrCode, #reader {
-      margin: 1rem auto;
-      border: 1px solid #ccc;
-      padding: 0.5rem;
+      margin: 0.5rem auto;
+      border: 1px solid #D1D5DB;
+      border-radius: var(--border-radius);
       width: 260px;
       height: 260px;
+      background: #F3F4F6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    h1, h2 {
-      margin-top: 1.5rem;
+
+    /* Kontaktliste anzeigen */
+    .contact-list {
+      margin-top: 0.75rem;
+      padding: 0.5rem;
+      background: #F3F4F6;
+      border-radius: var(--border-radius);
+      border: 1px solid #E5E7EB;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    .contact-list-item {
+      padding: 0.3rem 0.5rem;
+      border-bottom: 1px solid #E5E7EB;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+    .contact-list-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Kleine Utility-Klasse für zentrierten Text */
+    .text-center {
+      text-align: center;
     }
   </style>
 </head>
+
 <body>
-  <h1>🔐 AES-Schlüssel-Generierung</h1>
-  <button id="generateKey">Erzeuge AES-Schlüssel</button>
-  <br>
-  <input type="text" id="aesKey" readonly placeholder="Base64 AES-Schlüssel">
-  <div id="qrCode"></div>
+  <div class="container">
+    <h1 class="text-center">🔐 Verschlüsseltes Kontaktverzeichnis</h1>
 
-  <h2>📁 Kontaktverzeichnis</h2>
-  <!-- Upload/Download und Verzeichnis-Management -->
-  <input type="file" id="uploadFile">
-  <br>
-  <button id="newDirectory">Neues Verzeichnis erstellen</button>
-  <button id="downloadDirectory">Verzeichnis speichern</button>
-  <br>
-  <input type="password" id="directoryPassword" placeholder="Passwort für Verzeichnis">
+    <!-- ============================== -->
+    <!-- Section: Schlüssel & Kontakt hinzufügen -->
+    <!-- ============================== -->
+    <div class="card">
+      <h2>🗝️ Schlüssel & Kontakt hinzufügen</h2>
 
-  <h2>➕ Kontakt hinzufügen</h2>
-  <!-- QR-Scan Bereich -->
-  <div id="reader"></div>
-  <input type="text" id="contactName" placeholder="Kontaktname">
-  <button id="addContact">Kontakt speichern</button>
+      <!-- 1. Key erzeugen & QR-Code -->
+      <div class="form-group">
+        <button id="generateKey" class="btn">AES-Schlüssel erzeugen</button>
+      </div>
+      <div class="form-group">
+        <label for="aesKey">Base64 AES-Schlüssel</label>
+        <input type="text" id="aesKey" readonly placeholder="Hier erscheint der Schlüssel" />
+      </div>
+      <div id="qrCode"></div>
 
-  <h2>🔄 Text verschlüsseln/entschlüsseln</h2>
-  <textarea id="inputText" placeholder="Eingabetext"></textarea>
-  <br>
-  <select id="contactList">
-    <option value="">-- Wähle Kontakt --</option>
-  </select>
-  <br>
-  <button id="encryptText">Text verschlüsseln</button>
-  <button id="decryptText">Text entschlüsseln</button>
-  <br>
-  <textarea id="outputText" readonly placeholder="Verschlüsselter/entschlüsselter Text"></textarea>
+      <!-- 2. Kontakt hinzugefügen -->
+      <div class="form-group" style="margin-top:1.25rem;">
+        <label for="contactName">Kontaktname</label>
+        <input type="text" id="contactName" placeholder="Vorname Nachname" />
+      </div>
+      <div class="form-group text-center">
+        <button id="addContact" class="btn">Kontakt speichern</button>
+      </div>
+
+      <!-- 3. Aktuelle Kontakte anzeigen -->
+      <div style="margin-top:1rem;">
+        <p style="font-size:0.95rem; color: var(--text-muted);">Aktuelle Kontakte:</p>
+        <div id="contactListDisplay" class="contact-list">
+          <!-- Dynamisch befüllt -->
+          <p class="contact-list-item">Keine Kontakte vorhanden</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- Section: Kontaktverzeichnis (speichern/laden) -->
+    <!-- ============================== -->
+    <div class="card">
+      <h2>📁 Kontaktverzeichnis verwalten</h2>
+
+      <div class="form-group">
+        <label for="directoryPassword">Passwort für Verzeichnis</label>
+        <input type="password" id="directoryPassword" placeholder="Verzeichnis-Passwort" />
+      </div>
+
+      <div class="form-group text-center">
+        <button id="newDirectory" class="btn">Neues Verzeichnis</button>
+        <button id="downloadDirectory" class="btn" style="margin-left:0.5rem;">Verzeichnis speichern</button>
+      </div>
+
+      <div class="form-group text-center" style="margin-top:0.75rem;">
+        <label for="uploadFile" class="btn" style="background-color: var(--accent-color);">
+          Verzeichnis laden
+        </label>
+        <input type="file" id="uploadFile" accept=".txt" style="display:none;" />
+      </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- Section: Text verschlüsseln/entschlüsseln -->
+    <!-- ============================== -->
+    <div class="card">
+      <h2>🔄 Text verschlüsseln / entschlüsseln</h2>
+
+      <div class="form-group">
+        <label for="inputText">Eingabetext</label>
+        <textarea id="inputText" placeholder="Gib hier Deinen Text oder verschlüsselten String ein"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="contactList">Empfänger-Kontakt wählen</label>
+        <select id="contactList">
+          <option value="">-- Wähle Kontakt --</option>
+          <!-- Dynamisch befüllt -->
+        </select>
+      </div>
+
+      <div class="form-group text-center">
+        <button id="encryptText" class="btn" style="margin-right:0.5rem;">Verschlüsseln</button>
+        <button id="decryptText" class="btn">Entschlüsseln</button>
+      </div>
+
+      <div class="form-group">
+        <label for="outputText">Ausgabe</label>
+        <textarea id="outputText" readonly placeholder="Hier erscheint der (entschlüsselte) Text"></textarea>
+      </div>
+    </div>
+  </div>
 
   <script>
-    /***********************
-     * Dienstprogramme
-     ***********************/
+    /*******************************
+     *  Dienstprogramme für Encoding
+     *******************************/
     function arrayBufferToBase64(buffer) {
       let binary = '';
       const bytes = new Uint8Array(buffer);
@@ -93,15 +283,15 @@
       }
       return bytes;
     }
-    
+
     async function deriveKey(password, salt) {
       const enc = new TextEncoder();
       const keyMaterial = await crypto.subtle.importKey(
-          "raw",
-          enc.encode(password),
-          { name: "PBKDF2" },
-          false,
-          ["deriveKey"]
+        "raw",
+        enc.encode(password),
+        { name: "PBKDF2" },
+        false,
+        ["deriveKey"]
       );
       return crypto.subtle.deriveKey(
         {
@@ -117,51 +307,73 @@
       );
     }
 
-    /***********************
-     * 1. AES-Schlüssel-Generierung & QR-Code
-     ***********************/
+    /*******************************
+     *  1. AES-Schlüssel-Generierung & QR-Code
+     *******************************/
     async function generateAESKey() {
-      // Generiere AES-GCM Schlüssel (256 Bit)
-      const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
-      const rawKey = await crypto.subtle.exportKey("raw", key);
-      const base64Key = arrayBufferToBase64(rawKey);
-      document.getElementById("aesKey").value = base64Key;
-      
-      // Erzeuge QR-Code mit der qrcode.min.js Library
-      document.getElementById("qrCode").innerHTML = "";
-      let qr = qrcode(0, 'L'); // Version 0 und niedrige Fehlerkorrektur
-      qr.addData(base64Key);
-      qr.make();
-      document.getElementById("qrCode").innerHTML = qr.createImgTag();
+      try {
+        // Erzeuge AES-GCM Schlüssel (256 Bit)
+        const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
+        const rawKey = await crypto.subtle.exportKey("raw", key);
+        const base64Key = arrayBufferToBase64(rawKey);
+        document.getElementById("aesKey").value = base64Key;
+
+        // QR-Code generieren mit qrcode.min.js
+        const qrContainer = document.getElementById("qrCode");
+        qrContainer.innerHTML = "";
+        let qr = qrcode(0, 'L'); // Version 0, Fehlerkorrektur L
+        qr.addData(base64Key);
+        qr.make();
+        qrContainer.innerHTML = qr.createImgTag(8, 0); // 8px Rand, ohne Alt-Text
+      } catch (err) {
+        console.error(err);
+        alert("Fehler bei der Schlüsselgenerierung!");
+      }
     }
     document.getElementById("generateKey").addEventListener("click", generateAESKey);
 
-    /***********************
-     * 2. Kontaktverzeichnis (lokal, verschlüsselt)
-     ***********************/
-    let directory = {}; // Enthält alle Kontakte als { kontaktname: "base64_AES_KEY" }
+    /*******************************
+     *  2. Kontaktverzeichnis (lokal, verschlüsselt)
+     *******************************/
+    let directory = {}; // { kontaktName: base64AESKey }
 
-    // Aktualisiert das Dropdown mit allen vorhandenen Kontakten.
-    function updateContactList() {
+    // Aktualisiert das Dropdown-Menü und die Anzeige der Kontaktliste
+    function updateContactDisplay() {
       const select = document.getElementById("contactList");
       select.innerHTML = '<option value="">-- Wähle Kontakt --</option>';
-      for (const name in directory) {
-        const option = document.createElement("option");
-        option.value = name;
-        option.textContent = name;
-        select.appendChild(option);
+
+      const listDiv = document.getElementById("contactListDisplay");
+      listDiv.innerHTML = "";
+
+      if (Object.keys(directory).length === 0) {
+        // Keine Kontakte
+        listDiv.innerHTML = '<p class="contact-list-item">Keine Kontakte vorhanden</p>';
+      } else {
+        for (const name in directory) {
+          // Dropdown
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = name;
+          select.appendChild(option);
+
+          // Anzeige unter Kontaktliste
+          const p = document.createElement("p");
+          p.className = "contact-list-item";
+          p.textContent = name;
+          listDiv.appendChild(p);
+        }
       }
     }
 
     // Neues Verzeichnis initialisieren
     function createNewDirectory() {
       directory = {};
-      updateContactList();
-      alert("Neues Verzeichnis erstellt!");
+      updateContactDisplay();
+      alert("Neues Verzeichnis wurde erstellt!");
     }
     document.getElementById("newDirectory").addEventListener("click", createNewDirectory);
 
-    // Download (Verschlüsseln des Verzeichnisses mit Passwort)
+    // Verzeichnis herunterladen (verschlüsselt mit Passwort)
     async function downloadDirectory() {
       if (Object.keys(directory).length === 0) {
         alert("Verzeichnis ist leer!");
@@ -169,26 +381,22 @@
       }
       const password = document.getElementById("directoryPassword").value;
       if (!password) {
-        alert("Bitte vergib ein Passwort im entsprechenden Feld!");
+        alert("Bitte vergebe ein Passwort fürs Verzeichnis!");
         return;
       }
       const dataStr = JSON.stringify(directory);
       const enc = new TextEncoder();
       const data = enc.encode(dataStr);
-      
-      // Erzeuge zufälliges Salt (16 Byte) und IV (12 Byte)
       const salt = crypto.getRandomValues(new Uint8Array(16));
       const iv = crypto.getRandomValues(new Uint8Array(12));
       const key = await deriveKey(password, salt);
-      
+
       try {
         const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, data);
-        // Erstelle einen String im Format: base64(salt):base64(iv):base64(ciphertext)
         const fileContent = arrayBufferToBase64(salt) + ":" + arrayBufferToBase64(iv) + ":" + arrayBufferToBase64(encrypted);
         const blob = new Blob([fileContent], { type: "text/plain" });
         const url = URL.createObjectURL(blob);
-        
-        // Erzeuge dynamisch einen Download-Link
+
         const a = document.createElement("a");
         a.href = url;
         a.download = "kontaktverzeichnis.txt";
@@ -201,13 +409,13 @@
     }
     document.getElementById("downloadDirectory").addEventListener("click", downloadDirectory);
 
-    // Upload (Laden eines verschlüsselten Verzeichnisses)
+    // Verzeichnis hochladen und entschlüsseln
     document.getElementById("uploadFile").addEventListener("change", async function(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = async function(event) {
-        const content = event.target.result;
+        const content = event.target.result.trim();
         const parts = content.split(":");
         if (parts.length !== 3) {
           alert("Ungültiges Verzeichnisformat!");
@@ -219,7 +427,7 @@
         const cipherBuffer = base64ToArrayBuffer(cipherB64);
         const password = document.getElementById("directoryPassword").value;
         if (!password) {
-          alert("Bitte das Passwort im entsprechenden Feld eingeben!");
+          alert("Bitte Passwort fürs Verzeichnis eingeben!");
           return;
         }
         const key = await deriveKey(password, salt);
@@ -227,43 +435,46 @@
           const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, cipherBuffer);
           const dec = new TextDecoder();
           directory = JSON.parse(dec.decode(decrypted));
-          updateContactList();
+          updateContactDisplay();
           alert("Verzeichnis erfolgreich geladen!");
         } catch (err) {
           console.error(err);
-          alert("Fehler beim Entschlüsseln des Verzeichnisses (falsches Passwort?)!");
+          alert("Fehler beim Entschlüsseln (falsches Passwort?).");
         }
       };
       reader.readAsText(file);
-      // Setze den File-Input zurück, wenn du ihn erneut nutzen möchtest.
       e.target.value = "";
     });
 
-    /***********************
-     * 3. Kontakt hinzufügen (via QR-Code Scan)
-     ***********************/
+    /*******************************
+     *  3. Kontakt hinzufügen
+     *******************************/
     function addContact() {
-      const name = document.getElementById("contactName").value;
-      const key = document.getElementById("aesKey").value;
+      const name = document.getElementById("contactName").value.trim();
+      const key = document.getElementById("aesKey").value.trim();
       if (!name || !key) {
-        alert("Bitte sowohl einen Kontaktname als auch einen Schlüssel (QR-Scan oder Schlüssel generieren) bereitstellen!");
+        alert("Bitte Kontaktname und Schlüssel bereitstellen!");
+        return;
+      }
+      if (directory[name]) {
+        alert(`Kontakt "${name}" existiert bereits!`);
         return;
       }
       directory[name] = key;
-      updateContactList();
-      alert(`Kontakt "${name}" hinzugefügt!`);
+      updateContactDisplay();
+      document.getElementById("contactName").value = "";
+      alert(`Kontakt "${name}" wurde hinzugefügt!`);
     }
     document.getElementById("addContact").addEventListener("click", addContact);
 
-    /***********************
-     * 4. Text Verschlüsselung / Entschlüsselung
-     ***********************/
-    // Verschlüsseln
+    /*******************************
+     *  4. Text Verschlüsseln / Entschlüsseln
+     *******************************/
     async function encryptText() {
       const text = document.getElementById("inputText").value;
       const contact = document.getElementById("contactList").value;
       if (!contact || !text) {
-        alert("Bitte wähle einen Kontakt aus und gib einen Text ein!");
+        alert("Bitte wähle einen Kontakt und gib einen Text ein!");
         return;
       }
       const keyB64 = directory[contact];
@@ -273,30 +484,29 @@
       const iv = crypto.getRandomValues(new Uint8Array(12));
       try {
         const encryptedBuffer = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, cryptoKey, new TextEncoder().encode(text));
-        // Ausgabeformat: base64(iv):base64(ciphertext)
         const output = arrayBufferToBase64(iv) + ":" + arrayBufferToBase64(encryptedBuffer);
         document.getElementById("outputText").value = output;
       } catch (err) {
         console.error(err);
-        alert("Fehler beim Verschlüsseln des Textes!");
+        alert("Fehler beim Verschlüsseln!");
       }
     }
     document.getElementById("encryptText").addEventListener("click", encryptText);
 
-    // Entschlüsseln
     async function decryptText() {
-      const encryptedData = document.getElementById("inputText").value.split(":");
-      if (encryptedData.length !== 2) {
-        alert("Ungültiges Format des verschlüsselten Textes!");
+      const encryptedInput = document.getElementById("inputText").value.trim();
+      const parts = encryptedInput.split(":");
+      if (parts.length !== 2) {
+        alert("Ungültiges verschlüsseltes Format!");
         return;
       }
-      const [ivB64, cipherB64] = encryptedData;
+      const [ivB64, cipherB64] = parts;
       const iv = base64ToArrayBuffer(ivB64);
       const cipherBuffer = base64ToArrayBuffer(cipherB64);
 
       const contact = document.getElementById("contactList").value;
       if (!contact) {
-        alert("Bitte wähle einen Kontakt aus!");
+        alert("Bitte wähle einen Kontakt zum Entschlüsseln aus!");
         return;
       }
       const keyB64 = directory[contact];
@@ -309,20 +519,18 @@
         document.getElementById("outputText").value = decryptedText;
       } catch (err) {
         console.error(err);
-        alert("Fehler beim Entschlüsseln des Textes!");
+        alert("Fehler beim Entschlüsseln (ungültiger Schlüssel oder Daten)!");
       }
     }
     document.getElementById("decryptText").addEventListener("click", decryptText);
 
-    /***********************
-     * 3. QR-Code Scanner initialisieren (für Kontakt hinzufügen)
-     ***********************/
-    // Beim Laden der Seite den Scanner im Element "reader" starten.
+    /*******************************
+     *  5. QR-Code Scanner initialisieren
+     *******************************/
     window.addEventListener("DOMContentLoaded", () => {
       const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-        // Nach erfolgreichem Scan wird der dekodierte Text (AES-Schlüssel) in das entsprechende Feld eingetragen.
+        // Nach erfolgreichem Scan wird der Schlüssel eingefügt
         document.getElementById("aesKey").value = decodedText;
-        // Falls gewünscht, kann hier auch der QR-Code im Ausgabebereich aktualisiert werden.
       };
 
       const config = { fps: 10, qrbox: 250 };
@@ -338,10 +546,12 @@
             console.error("QR-Code Scan konnte nicht gestartet werden.", err);
           });
         } else {
-          alert("Keine Kamera gefunden!");
+          // Keine Kamera verfügbar
+          const reader = document.getElementById("reader");
+          reader.innerHTML = "<p style='color: var(--text-muted);'>Keine Kamera gefunden</p>";
         }
       }).catch(err => {
-        console.error("Fehler beim Zugriff auf Kameras.", err);
+        console.error("Fehler beim Zugriff auf Kameras:", err);
       });
     });
   </script>
