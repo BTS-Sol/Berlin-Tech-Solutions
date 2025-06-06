@@ -255,6 +255,26 @@
       a.click();
       URL.revokeObjectURL(url);
     });
+    
+    function simulateMouseEvent(event, simulatedType) {
+  if (event.touches.length > 1) return; // Nur Einzelberührungen verarbeiten
+  const touch = event.changedTouches[0];
+  const simulatedEvent = new MouseEvent(simulatedType, {
+    bubbles: true,
+    cancelable: true,
+    view: window,
+    clientX: touch.clientX,
+    clientY: touch.clientY
+  });
+  touch.target.dispatchEvent(simulatedEvent);
+  event.preventDefault(); // verhindert Scrollen
+}
+
+// Touch-Events in Maus-Events umwandeln
+canvas.addEventListener('touchstart', e => simulateMouseEvent(e, 'mousedown'), { passive: false });
+canvas.addEventListener('touchmove', e => simulateMouseEvent(e, 'mousemove'), { passive: false });
+canvas.addEventListener('touchend', e => simulateMouseEvent(e, 'mouseup'), { passive: false });
+    
   </script>
 </body>
 </html>
