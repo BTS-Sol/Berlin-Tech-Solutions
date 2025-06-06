@@ -16,6 +16,7 @@
     svg {
       border: 1px solid #ccc;
       background: #f9f9f9;
+      touch-action: none; /* Verhindert native Touch-Gesten */
     }
 
     .wall {
@@ -71,6 +72,50 @@
     #controls {
       margin-bottom: 10px;
     }
+
+    /* Legenden-Styling */
+    #legend {
+      margin-top: 20px;
+      font-family: sans-serif;
+    }
+    #legend ul {
+      list-style: none;
+      padding: 0;
+    }
+    #legend li {
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+    }
+    #legend span.legend-icon {
+      display: inline-block;
+      margin-right: 10px;
+    }
+    .legend-fixed {
+      width: 20px;
+      height: 4px;
+      background: black;
+    }
+    .legend-movable {
+      width: 20px;
+      height: 4px;
+      background: blue;
+    }
+    .legend-door {
+      width: 20px;
+      height: 4px;
+      border-bottom: 4px dashed green;
+    }
+    .legend-window {
+      width: 20px;
+      height: 4px;
+      border-bottom: 4px dashed orange;
+    }
+    .legend-furniture {
+      width: 20px;
+      height: 6px;
+      background: purple;
+    }
   </style>
 </head>
 <body>
@@ -85,19 +130,39 @@
   <div id="info">Koordinaten der beweglichen Wand erscheinen hier.</div>
   <div id="tooltip" class="tooltip"></div>
 
+  <!-- Legende -->
+  <div id="legend">
+    <h3>Legende</h3>
+    <ul>
+      <li><span class="legend-icon legend-fixed"></span>Fixe Wand (FW)</li>
+      <li><span class="legend-icon legend-movable"></span>Bewegliche Wand (BW)</li>
+      <li><span class="legend-icon legend-door"></span>Tür (T)</li>
+      <li><span class="legend-icon legend-window"></span>Fenster (F)</li>
+      <li><span class="legend-icon legend-furniture"></span>Möbel (M)</li>
+    </ul>
+  </div>
+
   <script>
     const canvas = document.getElementById('canvas');
     const upload = document.getElementById('upload');
     const info = document.getElementById('info');
     const tooltip = document.getElementById('tooltip');
     const saveBtn = document.getElementById('save');
-    const snapToGrid = () => document.getElementById('grid-toggle').checked;
+    const snapToggle = document.getElementById('grid-toggle');
     const SCALE = 50;
 
     let movingWall = null;
     let offset = { x: 0, y: 0 };
 
+    function snapToGrid() {
+      return snapToggle.checked;
+    }
+
     function drawGrid() {
+      // Entferne eventuell vorhandene Rasterlinien
+      const existingGridLines = canvas.querySelectorAll('.grid-line');
+      existingGridLines.forEach(line => line.remove());
+      
       for (let x = 0; x <= 800; x += SCALE) {
         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
         line.setAttribute('x1', x);
@@ -134,10 +199,10 @@
         line = line.trim();
         if (!line) continue;
 
-        const match = line.match(/(FW|BW|T|F|M),\s*Start\(([^,]+),\s*([^)]+)\),\s*Ende\(([^,]+),\s*([^)]+)\)/i);
+        const match = line.match(/(FW|BW|T|F|M),\s*Start([^,]+),\s*([^)]+),\s*Ende([^,]+),\s*([^)]+)/i);
         if (!match) continue;
 
-        const [_, type, x1, y1, x2, y2] = match;
+        const [ , type, x1, y1, x2, y2] = match;
         const wall = {
           type: type.toUpperCase(),
           x1: parseFloat(x1),
@@ -158,11 +223,21 @@
       line.classList.add('wall');
 
       switch (wall.type) {
-        case 'FW': line.classList.add('fixed'); break;
-        case 'BW': line.classList.add('movable'); break;
-        case 'T': line.classList.add('door'); break;
-        case 'F': line.classList.add('window'); break;
-        case 'M': line.classList.add('furniture'); break;
+        case 'FW': 
+          line.classList.add('fixed'); 
+          break;
+        case 'BW': 
+          line.classList.add('movable'); 
+          break;
+        case 'T': 
+          line.classList.add('door'); 
+          break;
+        case 'F': 
+          line.classList.add('window'); 
+          break;
+        case 'M': 
+          line.classList.add('furniture'); 
+          break;
       }
 
       line.dataset.type = wall.type;
@@ -171,20 +246,21 @@
       line.dataset.x2 = wall.x2;
       line.dataset.y2 = wall.y2;
 
-      if (wall.type === 'BW') {
-        line.addEventListener('mousedown', startDrag);
-      }
-
-      line.addEventListener('mousemove', (e) => {
+      // Tooltip-Anzeige
+      line.addEventListener('pointermove', (e) => {
         tooltip.style.left = `${e.clientX + 10}px`;
         tooltip.style.top = `${e.clientY + 10}px`;
         tooltip.innerText = `${line.dataset.type}, Start(${line.dataset.x1}, ${line.dataset.y1}), Ende(${line.dataset.x2}, ${line.dataset.y2})`;
         tooltip.style.display = 'block';
       });
-
-      line.addEventListener('mouseleave', () => {
+      line.addEventListener('pointerleave', () => {
         tooltip.style.display = 'none';
       });
+
+      // Nur bewegliche Wände (BW) werden verschiebbar gemacht
+      if (wall.type === 'BW') {
+        line.addEventListener('pointerdown', startDrag);
+      }
 
       canvas.appendChild(line);
     }
@@ -192,50 +268,59 @@
     function startDrag(e) {
       if (e.target.dataset.type !== 'BW') return;
       movingWall = e.target;
-      const mouseX = e.offsetX;
-      const mouseY = e.offsetY;
+      
+      const rect = canvas.getBoundingClientRect();
+      const pointerX = e.clientX - rect.left;
+      const pointerY = e.clientY - rect.top;
       const x1 = parseFloat(movingWall.getAttribute('x1'));
       const y1 = parseFloat(movingWall.getAttribute('y1'));
-      offset.x = mouseX - x1;
-      offset.y = mouseY - y1;
-      canvas.addEventListener('mousemove', drag);
-      canvas.addEventListener('mouseup', endDrag);
+      offset.x = pointerX - x1;
+      offset.y = pointerY - y1;
+      
+      movingWall.setPointerCapture(e.pointerId);
     }
 
-    function drag(e) {
+    canvas.addEventListener('pointermove', (e) => {
       if (!movingWall) return;
-      let newX1 = e.offsetX - offset.x;
-      let newY1 = e.offsetY - offset.y;
-      let dx = newX1 - parseFloat(movingWall.getAttribute('x1'));
-      let dy = newY1 - parseFloat(movingWall.getAttribute('y1'));
+      
+      const rect = canvas.getBoundingClientRect();
+      let newX1 = e.clientX - rect.left - offset.x;
+      let newY1 = e.clientY - rect.top - offset.y;
+      
+      const currentX1 = parseFloat(movingWall.getAttribute('x1'));
+      const currentY1 = parseFloat(movingWall.getAttribute('y1'));
+      let dx = newX1 - currentX1;
+      let dy = newY1 - currentY1;
+      
       let x2 = parseFloat(movingWall.getAttribute('x2')) + dx;
       let y2 = parseFloat(movingWall.getAttribute('y2')) + dy;
-
+      
       if (snapToGrid()) {
         newX1 = Math.round(newX1 / SCALE) * SCALE;
         newY1 = Math.round(newY1 / SCALE) * SCALE;
         x2 = Math.round(x2 / SCALE) * SCALE;
         y2 = Math.round(y2 / SCALE) * SCALE;
       }
-
+      
       movingWall.setAttribute('x1', newX1);
       movingWall.setAttribute('y1', newY1);
       movingWall.setAttribute('x2', x2);
       movingWall.setAttribute('y2', y2);
-
+      
       movingWall.dataset.x1 = (newX1 / SCALE).toFixed(2);
       movingWall.dataset.y1 = (newY1 / SCALE).toFixed(2);
       movingWall.dataset.x2 = (x2 / SCALE).toFixed(2);
       movingWall.dataset.y2 = (y2 / SCALE).toFixed(2);
-
+      
       info.innerText = `Bewegliche Wand: Start(${movingWall.dataset.x1}, ${movingWall.dataset.y1}), Ende(${movingWall.dataset.x2}, ${movingWall.dataset.y2})`;
-    }
+    });
 
-    function endDrag() {
-      canvas.removeEventListener('mousemove', drag);
-      canvas.removeEventListener('mouseup', endDrag);
-      movingWall = null;
-    }
+    canvas.addEventListener('pointerup', (e) => {
+      if (movingWall) {
+        movingWall.releasePointerCapture(e.pointerId);
+        movingWall = null;
+      }
+    });
 
     saveBtn.addEventListener('click', () => {
       const lines = [];
@@ -255,26 +340,6 @@
       a.click();
       URL.revokeObjectURL(url);
     });
-    
-    function simulateMouseEvent(event, simulatedType) {
-  if (event.touches.length > 1) return; // Nur Einzelberührungen verarbeiten
-  const touch = event.changedTouches[0];
-  const simulatedEvent = new MouseEvent(simulatedType, {
-    bubbles: true,
-    cancelable: true,
-    view: window,
-    clientX: touch.clientX,
-    clientY: touch.clientY
-  });
-  touch.target.dispatchEvent(simulatedEvent);
-  event.preventDefault(); // verhindert Scrollen
-}
-
-// Touch-Events in Maus-Events umwandeln
-canvas.addEventListener('touchstart', e => simulateMouseEvent(e, 'mousedown'), { passive: false });
-canvas.addEventListener('touchmove', e => simulateMouseEvent(e, 'mousemove'), { passive: false });
-canvas.addEventListener('touchend', e => simulateMouseEvent(e, 'mouseup'), { passive: false });
-    
   </script>
 </body>
 </html>
