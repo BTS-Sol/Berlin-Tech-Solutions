@@ -20,3 +20,24 @@ window.addEventListener('load', () => {
     }, 500);
   }, 2000);
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Alle Service-Kärtchen auswählen
+  const serviceCards = document.querySelectorAll('.service-card');
+
+  // Für jedes Kärtchen einen Klick-Handler registrieren
+  serviceCards.forEach(card => {
+    card.addEventListener('click', function() {
+      // Die Ziel-URL aus dem data-target-Attribut auslesen
+      const targetURL = card.getAttribute('data-target');
+      
+      // Falls eine Ziel-URL vorhanden ist, zur Seite navigieren
+      if (targetURL) {
+        window.location.href = targetURL;
+      } else {
+        // Optional: Meldung falls kein data-target definiert ist
+        alert('Weitere Informationen in Kürze...');
+      }
+    });
+  });
+});
