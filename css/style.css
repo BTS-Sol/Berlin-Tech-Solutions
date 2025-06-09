@@ -25,7 +25,13 @@ header, footer {
 .logo a {
   text-decoration: none; /* Kein Unterstrich */
   color: inherit; /* Gleiche Farbe wie der umgebende Text */
-  font-size: 2rem;
+  font-size: 3rem;
+}
+
+@media (max-width: 768px) {
+  .logo a {
+    font-size: 2.1rem;
+  }
 }
 
 
