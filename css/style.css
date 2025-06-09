@@ -288,3 +288,60 @@ footer {
   line-height: 1.4;
 }
 
+/* Container für den Software-Abschnitt */
+.software-development {
+  padding: 40px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Kopfbereich: Titel und Einleitung */
+.software-development header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.software-development header h1 {
+  font-size: 2em;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.software-development header p {
+  font-size: 1.2em;
+  color: #34495e;
+}
+
+/* Artikel: Beschreibungen und Liste */
+.software-development article p {
+  font-size: 1em;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.software-development article ul {
+  list-style-type: disc;
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+
+/* Call-to-Action Button (innerhalb des Main-Bereichs) */
+.cta {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.software-development .btn {
+  display: inline-block;
+  background-color: #2980b9;
+  color: #fff;
+  padding: 12px 24px;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.software-development .btn:hover {
+  background-color: #1a5980;
+}
