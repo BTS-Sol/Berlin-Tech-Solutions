@@ -295,7 +295,7 @@ footer a {
 
 /* Container für den Software-Abschnitt */
 .software-development {
-  background: linear-gradient(to bottom, #f7f9fc, #e1e8f0);
+  background: linear-gradient(135deg, #f7f9fc, #e1e8f0);
   border-radius: 8px;
   padding: 40px 20px;
   max-width: 900px;
