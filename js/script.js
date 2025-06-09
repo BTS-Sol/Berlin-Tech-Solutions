@@ -1,10 +1,23 @@
-// Akkordeon-Logik
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
+  // Accordion
   const accordions = document.querySelectorAll('.accordion-header');
   accordions.forEach(header => {
     header.addEventListener('click', () => {
       const content = header.nextElementSibling;
       content.style.display = content.style.display === 'block' ? 'none' : 'block';
+    });
+  });
+
+  // Service Cards
+  const serviceCards = document.querySelectorAll('.service-card');
+  serviceCards.forEach(card => {
+    card.addEventListener('click', function() {
+      const targetURL = card.getAttribute('data-target');
+      if (targetURL) {
+        window.location.href = targetURL;
+      } else {
+        alert('Weitere Informationen in Kürze...');
+      }
     });
   });
 });
@@ -21,23 +34,3 @@ window.addEventListener('load', () => {
   }, 2000);
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Alle Service-Kärtchen auswählen
-  const serviceCards = document.querySelectorAll('.service-card');
-
-  // Für jedes Kärtchen einen Klick-Handler registrieren
-  serviceCards.forEach(card => {
-    card.addEventListener('click', function() {
-      // Die Ziel-URL aus dem data-target-Attribut auslesen
-      const targetURL = card.getAttribute('data-target');
-      
-      // Falls eine Ziel-URL vorhanden ist, zur Seite navigieren
-      if (targetURL) {
-        window.location.href = targetURL;
-      } else {
-        // Optional: Meldung falls kein data-target definiert ist
-        alert('Weitere Informationen in Kürze...');
-      }
-    });
-  });
-});
