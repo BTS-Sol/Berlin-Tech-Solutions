@@ -68,6 +68,7 @@
       align-items: center;
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <h1>Aktienkäufe und -verkäufe</h1>
@@ -115,9 +116,15 @@
     </div>
   </div>
 
+  <div class="section">
+    <h2>Historische Darstellung</h2>
+    <canvas id="historieChart" height="300"></canvas>
+  </div>
+
   <script>
     let kaufId = 0;
     let verkaufId = 0;
+    let chart; // Chart.js-Objekt
 
     function addEntry(type) {
       const container = document.getElementById(type + 'Container');
@@ -181,6 +188,59 @@
       const gewinnEl = document.getElementById("gewinnVerlust");
       gewinnEl.textContent = gewinn.toFixed(2);
       gewinnEl.className = "summary " + (gewinn >= 0 ? "gain" : "loss");
+
+      // Diagramm aktualisieren
+      updateChart(kaufAnteile, verkaufAnteile, verbleibendeAnzahl, aktuellerKurs);
+    }
+
+    function updateChart(kauf, verkauf, verbleibend, kurs) {
+      const labels = ['Käufe', 'Verkäufe', 'Aktueller Bestand'];
+      const daten = [
+        kauf * kurs,
+        verkauf * kurs,
+        verbleibend * kurs
+      ];
+
+      const farben = ['#4caf50', '#f44336', '#2196f3'];
+
+      const ctx = document.getElementById('historieChart').getContext('2d');
+
+      if (chart) {
+        chart.data.datasets[0].data = daten;
+        chart.update();
+      } else {
+        chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Volumen (€)',
+              data: daten,
+              backgroundColor: farben
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: ctx => `${ctx.parsed.x.toFixed(2)} €`
+                }
+              }
+            },
+            scales: {
+              x: {
+                title: { display: true, text: 'Volumen (€)' }
+              },
+              y: {
+                title: { display: true, text: 'Ereignis' }
+              }
+            }
+          }
+        });
+      }
     }
   </script>
 </body>
