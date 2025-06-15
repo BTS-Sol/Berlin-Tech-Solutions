@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>★ Kundenbewertungen ★</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .review-card {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      text-align: center;
+      max-width: 350px;
+      position: relative;
+    }
+
+    .review-card img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #ddd;
+      margin-bottom: 15px;
+    }
+
+    .speech-bubble {
+      position: relative;
+      background: #eee;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 1rem;
+      margin-top: 10px;
+      display: inline-block;
+    }
+
+    .speech-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      margin-left: -10px;
+      width: 0;
+      height: 0;
+      border: 10px solid transparent;
+      border-bottom-color: #eee;
+    }
+
+    .stars {
+      color: #f5c518;
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="review-card">
+    <img id="person-img" src="" alt="Kundenbild">
+    <div class="stars">★★★★★</div>
+    <div class="speech-bubble" id="review-text"></div>
+  </div>
+
+  <script>
+    const reviews = [
+      "Ich hätte nie gedacht, dass ich das brauche – aber jetzt kann ich nicht mehr ohne!",
+      "Einfach unglaublich. Meine Katze ist auch begeistert.",
+      "Ich dachte zuerst, das wäre ein Scherz. Jetzt bin ich süchtig.",
+      "Besser als Urlaub und Kaffee zusammen!",
+      "Hätte ich das früher gewusst, wären meine Probleme längst gelöst.",
+      "Meine Nachbarn sprechen wieder mit mir, danke dafür!"
+    ];
+
+    function loadRandomImage() {
+      const img = document.getElementById("person-img");
+      const imageUrl = "thispersondoesnotexist.com/image?" + new Date().getTime(); // Cache busting
+      img.src = "https://images.weserv.nl/?url=" + encodeURIComponent(imageUrl);
+    }
+
+    function loadRandomReview() {
+      const review = document.getElementById("review-text");
+      review.textContent = reviews[Math.floor(Math.random() * reviews.length)];
+    }
+
+    window.onload = function() {
+      loadRandomImage();
+      loadRandomReview();
+    };
+  </script>
+</body>
+</html>
