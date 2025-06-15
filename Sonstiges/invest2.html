@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Knock-Out Rechner</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: inline-block;
+      width: 150px;
+      margin-top: 10px;
+    }
+
+    input, select {
+      padding: 5px;
+      width: 150px;
+    }
+
+    table {
+      margin-top: 30px;
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #eee;
+    }
+
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 700px;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Knock-Out Rechner</h2>
+
+    <label for="kurs">Aktueller Kurs:</label>
+    <input type="number" id="kurs" step="0.01"><br>
+
+    <label for="knockout">Knock-Out:</label>
+    <input type="number" id="knockout" step="0.01"><br>
+
+    <label for="richtung">Long / Short:</label>
+    <select id="richtung">
+      <option value="long">Long</option>
+      <option value="short">Short</option>
+    </select><br>
+
+    <label for="investment">Investmenthöhe (€):</label>
+    <input type="number" id="investment" step="0.01"><br>
+
+    <table id="ergebnisTabelle">
+      <thead>
+        <tr>
+          <th>Kursveränderung</th>
+          <th>Neuer Kurs</th>
+          <th>Wert (€)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamische Zeilen -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const inputs = document.querySelectorAll("input, select");
+    inputs.forEach(input => input.addEventListener("input", updateTabelle));
+
+    function updateTabelle() {
+      const kurs = parseFloat(document.getElementById("kurs").value);
+      const knockout = parseFloat(document.getElementById("knockout").value);
+      const richtung = document.getElementById("richtung").value;
+      const investment = parseFloat(document.getElementById("investment").value);
+
+      const tbody = document.querySelector("#ergebnisTabelle tbody");
+      tbody.innerHTML = "";
+
+      if (isNaN(kurs) || isNaN(knockout) || isNaN(investment)) return;
+
+      for (let i = -10; i <= 10; i++) {
+        const percentChange = i * 0.05; // 5% Schritte
+        const kursNeu = kurs * (1 + percentChange);
+        let hebel, diff, wert;
+
+        if (richtung === "long") {
+          if (kurs <= knockout) {
+            hebel = 0;
+          } else {
+            hebel = kurs / (kurs - knockout);
+          }
+          diff = kursNeu - kurs;
+        } else {
+          if (kurs >= knockout) {
+            hebel = 0;
+          } else {
+            hebel = kurs / (knockout - kurs);
+          }
+          diff = kurs - kursNeu;
+        }
+
+        wert = investment + (diff * hebel * (investment / kurs));
+        wert = kursNeu <= 0 || (richtung === "long" && kursNeu <= knockout) || (richtung === "short" && kursNeu >= knockout) ? 0 : wert;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${(percentChange * 100).toFixed(0)}%</td>
+          <td>${kursNeu.toFixed(2)}</td>
+          <td>${wert.toFixed(2)} €</td>
+        `;
+        tbody.appendChild(row);
+      }
+    }
+  </script>
+</body>
+</html>
