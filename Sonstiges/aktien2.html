@@ -2,23 +2,22 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Der ultimative Aktien-Prophet 💸🚀💥</title>
+    <title>Der ultimative Aktien-Prophet 💸🚀</title>
     <style>
         body {
-            background: linear-gradient(135deg, #ff00ff, #00ffff);
-            color: white;
+            background: linear-gradient(135deg, #222, #444);
+            color: #fff;
             font-family: 'Comic Sans MS', cursive, sans-serif;
             text-align: center;
             padding: 50px;
-            overflow-x: hidden;
         }
         .prophet {
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             padding: 30px;
             border-radius: 20px;
             margin: 0 auto;
             max-width: 600px;
-            box-shadow: 0 0 30px #ffff00;
+            box-shadow: 0 0 30px #ffcc00;
             animation: pulse 2s infinite alternate;
         }
         .stock {
@@ -62,15 +61,30 @@
             transition: transform 0.2s;
         }
         button:hover {
-            transform: scale(1.2);
+            transform: scale(1.1);
         }
         .emoji {
             font-size: 48px;
             animation: blink 1s infinite alternate;
         }
+        .bottom-button {
+            margin-top: 50px;
+            font-size: 20px;
+            background: #ffcc00;
+            color: black;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 0 15px #ffcc00;
+            transition: transform 0.2s;
+        }
+        .bottom-button:hover {
+            transform: scale(1.05);
+        }
         @keyframes pulse {
-            from { box-shadow: 0 0 30px #ffff00; }
-            to { box-shadow: 0 0 60px #ff00ff; }
+            from { box-shadow: 0 0 30px #ffcc00; }
+            to { box-shadow: 0 0 60px #ff9900; }
         }
         @keyframes shake {
             from { transform: rotate(-5deg); }
@@ -78,7 +92,7 @@
         }
         @keyframes blink {
             from { opacity: 1; }
-            to { opacity: 0.3; }
+            to { opacity: 0.4; }
         }
     </style>
 </head>
@@ -96,6 +110,14 @@
     <audio id="cashSound">
         <source src="https://www.myinstants.com/media/sounds/cash-register.mp3" type="audio/mpeg">
     </audio>
+
+    <div style="margin-top: 60px;">
+        <p>🛡️ Gegen staatliche Grundrechtseingriffe</p>
+        <p>💰 Jeder hat ein Recht reich zu werden!</p>
+        <a href="https://www.google.com" target="_blank">
+            <button class="bottom-button">Depot eröffnen</button>
+        </a>
+    </div>
 
     <script>
         const stocks = [
