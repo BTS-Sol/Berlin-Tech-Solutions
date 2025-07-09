@@ -4,18 +4,27 @@ Funktionen:
 
 statusabfragen()  
 Fragt alle Nutzer - seid ihr frei?
-antwort: 0=Nein, 1=Ja.  (Summe_Ant = alle ja's)
+antwort erwartet: 0=Nein, 1=Ja.  (Summe_Ant = alle ja's)
 data: liest IP Adressen aus active.txt 
-do: createteillisten(Summe_Ant, MaxPWLength)
+do: createteillisten(Summe_Ant)
 
 warteaufanfrage() // ewiger loop 
 Läuft permanent und wartet auf eine statusabfrage.
-antwort: --keine--
+antwort erwartet: --keine--
 data: --keine--
 do: wenn anfrage: Prüfe ob Axiom/Hashcat aktiv ist. Antworte 0=Ja ist aktiv, 1=Nein bin frei.
 
+createteillisten(clients)
+Generiert Sublisten für x-clients. Die Vereinigt alle abdeckt. 
+ 
+
+startattack(hash, list)
+antwort: 0=fehler/abgelehnt, 1=ja, 2=fertig&nein, 3=fertig&js
+
 
 warteaufanfrage() läuft 
-dann starte statusabfragen() 
-warteaufanfrage() returnt für warteaufanfrage 
+starte händisch statusabfragen() 
+warteaufanfrage() returnt je nachdem 1 oder 0
+statusabfrage() summiert die returns (returns + 1)=clients 
+createteillisten(clients) 
 
