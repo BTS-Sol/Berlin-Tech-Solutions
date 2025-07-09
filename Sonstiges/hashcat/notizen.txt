@@ -1,0 +1,21 @@
+
+
+Funktionen:
+
+statusabfragen()  
+Fragt alle Nutzer - seid ihr frei?
+antwort: 0=Nein, 1=Ja.  (Summe_Ant = alle ja's)
+data: liest IP Adressen aus active.txt 
+do: createteillisten(Summe_Ant, MaxPWLength)
+
+warteaufanfrage() // ewiger loop 
+Läuft permanent und wartet auf eine statusabfrage.
+antwort: --keine--
+data: --keine--
+do: wenn anfrage: Prüfe ob Axiom/Hashcat aktiv ist. Antworte 0=Ja ist aktiv, 1=Nein bin frei.
+
+
+warteaufanfrage() läuft 
+dann starte statusabfragen() 
+warteaufanfrage() returnt für warteaufanfrage 
+
