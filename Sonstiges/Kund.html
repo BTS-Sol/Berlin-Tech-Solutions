@@ -1,220 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>★ Kundenbewertungen ★</title>
-  <style>
-    /* Body mit funky Gradient Hintergrund und zentriert */
-    body {
-      font-family: 'Arial Black', Arial, sans-serif;
-      background: linear-gradient(135deg, #ff0080, #7928ca, #ff0080);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      color: white;
-      text-shadow: 0 0 8px #ff66cc;
-    }
-
-    /* Große fette Überschrift mit Glow */
-    h1#title {
-      font-size: 2.5rem;
-      font-weight: 900;
-      margin-bottom: 30px;
-      color: #ff66cc;
-      text-shadow:
-         0 0 8px #ff66cc,
-         0 0 20px #ff66cc,
-         0 0 30px #ff33aa,
-         0 0 40px #ff33aa;
-      user-select: none;
-    }
-
-    /* Review Card mit Neon-Glow-Umrandung */
-    .review-card {
-      background: #1a001a;
-      border-radius: 15px;
-      padding: 25px 30px;
-      box-shadow:
-        0 0 15px #ff33cc,
-        0 0 30px #ff33cc,
-        0 0 40px #ff66cc;
-      text-align: center;
-      max-width: 360px;
-      position: relative;
-      border: 2px solid #ff33cc;
-      transition: transform 0.3s ease;
-    }
-    .review-card:hover {
-      transform: scale(1.05);
-      box-shadow:
-        0 0 25px #ff00ff,
-        0 0 50px #ff00ff,
-        0 0 70px #ff66ff;
-    }
-
-    .review-card img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #ff66cc;
-      margin-bottom: 15px;
-      box-shadow:
-        0 0 10px #ff66cc,
-        0 0 20px #ff33cc;
-    }
-
-    .name {
-      font-weight: 900;
-      margin-bottom: 8px;
-      font-size: 1.3rem;
-      color: #ff99dd;
-      text-shadow: 0 0 10px #ff99dd;
-    }
-
-    .stars {
-      color: #ffcc00;
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-      height: 1.5em;
-      text-shadow:
-        0 0 5px #ffcc00,
-        0 0 10px #ffcc00;
-    }
-
-    .speech-bubble {
-      position: relative;
-      background: #330033;
-      border-radius: 15px;
-      padding: 20px;
-      font-size: 1.1rem;
-      margin-top: 10px;
-      display: inline-block;
-      color: #ff99dd;
-      box-shadow:
-        0 0 8px #ff33cc,
-        inset 0 0 5px #ff99dd;
-      text-shadow: 0 0 5px #ff66cc;
-    }
-
-    .speech-bubble::after {
-      content: "";
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      margin-left: -12px;
-      width: 0;
-      height: 0;
-      border: 12px solid transparent;
-      border-bottom-color: #330033;
-      filter: drop-shadow(0 0 5px #ff33cc);
-    }
-
-    button {
-      margin-top: 30px;
-      padding: 12px 30px;
-      background: #ff33cc;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 900;
-      box-shadow:
-        0 0 10px #ff33cc,
-        0 0 20px #ff66cc;
-      transition: background 0.3s ease, box-shadow 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-    }
-
-    button:hover {
-      background: #ff00aa;
-      box-shadow:
-        0 0 15px #ff00aa,
-        0 0 30px #ff66ff,
-        0 0 40px #ff99ff;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Risk Gewinnwahrscheinlichkeit</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  input {
+    width: 80px;
+    margin-right: 10px;
+  }
+  button {
+    padding: 6px 12px;
+  }
+  #result {
+    margin-top: 15px;
+    font-weight: bold;
+  }
+</style>
 </head>
 <body>
-  <h1 id="title">ALEX R. SEXBEWERTUNG</h1> <!-- fette Überschrift -->
 
-  <div class="review-card">
-    <img id="person-img" src="" alt="Kundenbild" />
-    <div class="name" id="person-name">Max M., Berlin</div>
-    <div class="stars" id="stars"></div>
-    <div class="speech-bubble" id="review-text"></div>
-  </div>
-  <button onclick="loadRandomReview(true)">Noch eine Bewertung!</button>
+<h2>Risk – Gewinnwahrscheinlichkeit (exakt)</h2>
 
-  <script>
-const reviews = [
-  { name: "Max T., Berlin", text: "War eher ein Sofakissen als ein Feuerwerk – leider ziemlich lasch." },
-  { name: "Lisa R., Hamburg", text: "Hätte mehr Spannung gebraucht, so war’s eher ein laues Lüftchen." },
-  { name: "Mona S., Köln", text: "Zuerst dachte ich, das wird heiß – wurde dann aber eher ein Tiefschlaf." },
-  { name: "Julia F., München", text: "Nach fünf Minuten war ich schon im Land der Träume, und nicht aus Freude." },
-  { name: "Claudia W., Stuttgart", text: "Die Aktion war so kurz, ich hab’s kaum bemerkt – eher peinlich." },
-  { name: "Sarah M., Düsseldorf", text: "Mehr Gähnen als Stöhnen, sorry, da war definitiv Luft nach oben." },
-  { name: "Lukas B., Leipzig", text: "Manchmal fühlt es sich an, als ob der Motor nur stottert – ohne Turbo." },
-  { name: "Felix K., Nürnberg", text: "War so schnell vorbei, ich hab mich gefragt, ob der Stecker gezogen wurde." },
-  { name: "Anna G., Bremen", text: "Viel Gerede, wenig Action – fast schon meditativ langweilig." },
-  { name: "David H., Frankfurt", text: "Verspricht Feuer, liefert aber nur lauwarmes Wasser." },
-  { name: "Svenja L., Berlin", text: "So lahm, da hätt’ selbst eine Schnecke mehr Tempo gehabt – absolute Nullnummer!" },
-  { name: "Kevin M., Hamburg", text: "Ich hab’s echt versucht, aber das war ’ne Beleidigung für meine Sinne!" },
-  { name: "Tanja K., Köln", text: "Bisschen mehr Drama hätte nicht geschadet, das hier war ’n epischer Reinfall." },
-  { name: "Mike S., München", text: "Fühlte sich an, als würde jemand mit nem Gummihammer draufhauen – ohne Wirkung." },
-  { name: "Jessica R., Stuttgart", text: "Absolut fade und null prickelnd – eher eine Zumutung als ein Erlebnis." },
-  { name: "Dennis F., Düsseldorf", text: "Ich schwör, das war ’n Witz – hätte besser ’ne Dose Bohnen geöffnet." },
-  { name: "Nina W., Leipzig", text: "Hätte ich mir sparen können, das war ’n Totalausfall deluxe." },
-  { name: "Oliver B., Nürnberg", text: "Schlechter als jede TV-Reality-Show – einfach nur peinlich." },
-  { name: "Laura H., Bremen", text: "Null Spannung, null Fun, null alles – einfach nur ’ne Katastrophe." },
-  { name: "Jan D., Frankfurt", text: "Die einzig geile Aktion war, dass ich danach sofort eingeschlafen bin." }
-];
+<label>Angreifer (A):</label>
+<input type="number" id="attackers" min="1" value="5">
 
+<label>Verteidiger (V):</label>
+<input type="number" id="defenders" min="1" value="3">
 
-    const totalImages = 10;
-    const imagePath = "img/";
-    let currentIndex = -1;
-    let intervalId;
+<button onclick="calculate()">Berechnen</button>
 
-    function generateStars(count) {
-      return "★".repeat(count) + "☆".repeat(5 - count);
-    }
+<div id="result"></div>
 
-    function loadRandomReview(manual = false) {
-      const img = document.getElementById("person-img");
-      const reviewText = document.getElementById("review-text");
-      const name = document.getElementById("person-name");
-      const stars = document.getElementById("stars");
+<script>
+/*
+  Würfel-Ergebniswahrscheinlichkeiten
+  Format:
+  key = "a-d"  (a = Angreiferwürfel, d = Verteidigerwürfel)
+  value = Array von [VerlustA, VerlustV, Wahrscheinlichkeit]
+*/
+const outcomeProbabilities = {
+  "1-1": [
+    [1, 0, 21/36],
+    [0, 1, 15/36]
+  ],
+  "2-1": [
+    [1, 0, 91/216],
+    [0, 1, 125/216]
+  ],
+  "3-1": [
+    [1, 0, 441/1296],
+    [0, 1, 855/1296]
+  ],
+  "1-2": [
+    [1, 0, 161/216],
+    [0, 1, 55/216]
+  ],
+  "2-2": [
+    [2, 0, 581/1296],
+    [1, 1, 420/1296],
+    [0, 2, 295/1296]
+  ],
+  "3-2": [
+    [2, 0, 2275/7776],
+    [1, 1, 2611/7776],
+    [0, 2, 2890/7776]
+  ]
+};
 
-      // Zufälliger Index, aber nicht gleich wie vorher
-      let newIndex;
-      do {
-        newIndex = Math.floor(Math.random() * reviews.length);
-      } while (newIndex === currentIndex);
-      currentIndex = newIndex;
+// Memoisierungstabelle
+const memo = new Map();
 
-      const review = reviews[newIndex];
-      const starRating = Math.floor(Math.random() * 3) + 1; // 1–3
+function winProbability(A, V) {
+  // Abbruchbedingungen
+  if (V === 0) return 1;
+  if (A === 0) return 0;
 
-      img.src = `${imagePath}${newIndex + 1}.jpg`;
-      name.textContent = review.name;
-      reviewText.textContent = review.text;
-      stars.textContent = generateStars(starRating);
+  const key = A + "," + V;
+  if (memo.has(key)) return memo.get(key);
 
-      if (manual && intervalId) {
-        clearInterval(intervalId);
-        intervalId = setInterval(() => loadRandomReview(false), 5000);
-      }
-    }
+  const aDice = Math.min(3, A);
+  const dDice = Math.min(2, V);
+  const outcomes = outcomeProbabilities[aDice + "-" + dDice];
 
-    window.onload = () => {
-      loadRandomReview();
-      intervalId = setInterval(() => loadRandomReview(false), 5000);
-    };
-  </script>
+  let probability = 0;
+
+  for (const [lossA, lossV, p] of outcomes) {
+    probability += p * winProbability(A - lossA, V - lossV);
+  }
+
+  memo.set(key, probability);
+  return probability;
+}
+
+function calculate() {
+  memo.clear();
+
+  const A = parseInt(document.getElementById("attackers").value);
+  const V = parseInt(document.getElementById("defenders").value);
+
+  if (A <= 0 || V <= 0) {
+    document.getElementById("result").innerText =
+      "Angreifer und Verteidiger müssen größer als 0 sein.";
+    return;
+  }
+
+  const p = winProbability(A, V);
+  document.getElementById("result").innerText =
+    "Gewinnwahrscheinlichkeit Angreifer: " +
+    (p * 100).toFixed(2) + " %";
+}
+</script>
+
 </body>
 </html>
