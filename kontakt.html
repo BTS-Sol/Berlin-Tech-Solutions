@@ -5,49 +5,119 @@
   <title>Kontakt</title>
   <link rel="stylesheet" href="css/style.css">
   <script defer src="js/script.js"></script>
+  <style>
+    /* Kleines Styling für die Statusmeldung */
+    #formStatus {
+        margin-top: 15px;
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+    .status-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    .status-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+  </style>
 </head>
 <body>
   <header>
     <div class="logo">
-		<a href="index.html">Berlin Tech Solutions</a>
-	</div>
+        <a href="index.html">Berlin Tech Solutions</a>
+    </div>
     <nav>
       <a href="index.html">Start</a>
       <a href="leistungen.html">Leistungen</a>
       <a href="portfolio.html">Portfolio</a>
       <a href="kontakt.html"><u>Kontakt</u></a>
     </nav>
-	<img src="img/logo.png" alt="Logo" class="logo2">
+    <img src="img/logo.png" alt="Logo" class="logo2">
   </header>
-  <main  class="main contact-section">
-	<form class="contact-form"
-      action="https://contact-form-worker.berlinsolutions892.workers.dev"
-      method="POST">
-	  <p class="intro">Bitte füllen Sie das Formular aus. Wir freuen uns auf Ihre Nachricht!</p>
 
-	  
-	  <label for="name">Name</label>
-	  <input type="text" id="name" name="Name" placeholder="Ihr Name" required>
+  <main class="main contact-section">
+    <form class="contact-form" id="contactForm">
+      <p class="intro">Bitte füllen Sie das Formular aus. Wir freuen uns auf Ihre Nachricht!</p>
+      
+      <label for="name">Name</label>
+      <input type="text" id="name" name="Name" placeholder="Ihr Name" required>
 
-	  <label for="email">E-Mail Adresse</label>
-	  <input type="email" id="email" name="Email" placeholder="ihrname@email.de" required>
+      <label for="email">E-Mail Adresse</label>
+      <input type="email" id="email" name="Email" placeholder="ihrname@email.de" required>
 
-	  <label for="message">Nachricht</label>
-	  <textarea id="message" name="Nachricht" placeholder="Was ist Ihr Anliegen?" rows="6" required></textarea>
-	  
-	
-	  <input type="checkbox" id="datenschutz" name="Datenschutz" required>
-	  <label for="datenschutz">Ich bin mit der Verarbeitung meiner Eingaben zum Zweck der Anfragebearbeitung einverstanden.</label>
+      <label for="message">Nachricht</label>
+      <textarea id="message" name="Nachricht" placeholder="Was ist Ihr Anliegen?" rows="6" required></textarea>
+      
+      <div style="margin: 10px 0;">
+        <input type="checkbox" id="datenschutz" name="Datenschutz" required>
+        <label for="datenschutz" style="display:inline;">Ich bin mit der Verarbeitung meiner Eingaben zum Zweck der Anfragebearbeitung einverstanden.</label>
+      </div>
 
-
-
-	  <button type="submit" class="submit-btn">Absenden</button>
-	</form>
+      <button type="submit" class="submit-btn" id="submitBtn">Absenden</button>
+      
+      <p id="formStatus" style="display:none;"></p>
+    </form>
   </main>
+
   <footer>
     <a href="impressum.html">Impressum</a> | <a href="datenschutz.html">Datenschutz</a>
   </footer>
+
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); // Verhindert das Neuladen der Seite
+
+        const form = e.target;
+        const statusMsg = document.getElementById('formStatus');
+        const btn = document.getElementById('submitBtn');
+
+        // Button deaktivieren, um Doppelklick zu verhindern
+        btn.disabled = true;
+        btn.innerText = "Wird gesendet...";
+        
+        // Status zurücksetzen
+        statusMsg.style.display = "none";
+        statusMsg.className = "";
+
+        // Daten vorbereiten
+        const formData = new FormData(form);
+
+        try {
+            // Senden an deinen Cloudflare Worker
+            const response = await fetch("https://contact-form-worker.berlinsolutions892.workers.dev", {
+                method: "POST",
+                body: formData
+            });
+
+            if (response.ok) {
+                // ERFOLG
+                statusMsg.innerText = "Vielen Dank! Ihre Nachricht wurde erfolgreich gesendet.";
+                statusMsg.className = "status-success";
+                statusMsg.style.display = "block";
+                form.reset(); // Formular leeren
+            } else {
+                // FEHLER VOM SERVER
+                const errorText = await response.text();
+                statusMsg.innerText = "Fehler beim Senden: " + errorText;
+                statusMsg.className = "status-error";
+                statusMsg.style.display = "block";
+            }
+        } catch (error) {
+            // NETZWERKFEHLER
+            statusMsg.innerText = "Es ist ein Netzwerkfehler aufgetreten. Bitte versuchen Sie es später erneut.";
+            statusMsg.className = "status-error";
+            statusMsg.style.display = "block";
+            console.error(error);
+        } finally {
+            // Button wieder aktivieren
+            btn.disabled = false;
+            btn.innerText = "Absenden";
+        }
+    });
+  </script>
 </body>
 </html>
-
-
