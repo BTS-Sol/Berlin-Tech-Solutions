@@ -1,91 +1,120 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Berlin Tech Solutions</title>
-  <link rel="stylesheet" href="css/style.css">
-<script defer src="js/script.js"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berlin Tech Solutions | Pragmatische IT-Lösungen</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header>
-    <div class="logo">
-		<a href="index.html">Berlin Tech Solutions</a>
-	</div>
-    <nav>
-      <a href="index.html">Start</a>
-      <a href="leistungen.html">Leistungen</a>
-      <a href="portfolio.html">Portfolio</a>
-      <a href="kontakt.html">Kontakt</a>
-    </nav>
-	<img src="img/logo.png" alt="Logo" class="logo2">
-  </header>
-  <main class="main">
-<h1>Willkommen bei Berlin Tech Solutions – Technik, die wirkt.</h1>
 
-<p>
-  Wir sind Ihr Partner für die digitale Zukunft. Ob
-  <strong>Automatisierung</strong>,
-  <strong>Datenanalyse & -sicherung</strong>,
-  <strong>Webentwicklung</strong> oder
-  <strong>maßgeschneiderte Softwarelösungen</strong> – bei uns erhalten Sie individuelle Technologien, die funktionieren, skalieren und begeistern.
-</p>
+    <header class="site-header">
+        <div class="container header-flex">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="img/logo.png" alt="Berlin Tech Solutions" class="logo-img">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html" class="active">Start</a></li>
+                    <li><a href="leistungen.html">Lösungen</a></li>
+                    <li><a href="portfolio.html">Beispiele</a></li>
+                    <li><a href="kontakt.html" class="btn-nav">Kontakt</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-<p><strong>Verlässlich. Verständlich. Zukunftsorientiert.</strong></p>
+    <main>
+        <section class="hero">
+            <div class="container hero-content">
+                <h1>Schluss mit Excel-Chaos und manuellem Abtippen.</h1>
+                <p class="lead">
+                    Wir optimieren Ihre bestehenden Büro-Prozesse. 
+                    Pragmatisch, ohne Systemwechsel und direkt in Ihrer gewohnten Windows-Umgebung.
+                </p>
+                <div class="hero-actions">
+                    <a href="kontakt.html" class="btn-primary">Kostenloses Erstgespräch</a>
+                    <a href="#vorteile" class="btn-secondary">Wie wir arbeiten</a>
+                </div>
+            </div>
+        </section>
 
-<p>
-  Unsere Mission: Komplexe IT greifbar machen – mit smarten Lösungen, die nicht nur technologisch überzeugen, sondern echten Geschäftsnutzen stiften.
-</p>
+        <section class="section-gray">
+            <div class="container text-center">
+                <h2>Kennen Sie das?</h2>
+                <p style="max-width: 700px; margin: 0 auto;">
+                    Rechnungen müssen abgetippt werden, Daten aus E-Mails landen händisch in Listen und am Ende weiß nur ein Mitarbeiter, wie die Excel-Tabelle wirklich funktioniert.
+                </p>
+            </div>
+        </section>
 
-<div class="vorteile" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
-  <div>
-    <img src="img/Kompetenzen.png" alt="Kompetenzen steigern" style="width: 40px; height: 40px;"><br>
-    <strong>Kompetenzen steigern</strong><br>
-    Mitarbeitende lernen den sicheren Umgang mit neuen Technologien – praxisnah & zielgerichtet.
-  </div>
+        <section id="vorteile" class="features-section">
+            <div class="container">
+                <div class="grid-4">
+                    
+                    <div class="feature-card">
+                        <img src="img/Analyse.png" alt="Analyse Icon" class="feature-icon">
+                        <h3>Prozesse verstehen</h3>
+                        <p>Wir installieren nicht blind Software. Wir analysieren erst Ihre Abläufe und finden die "Flaschenhälse" in Ihrer Verwaltung.</p>
+                    </div>
 
-  <div>
-    <img src="img/Aufgabenplanung.png" alt="Aufgabenplanung" style="width: 40px; height: 40px;"><br>
-    <strong>Effektive Aufgabenplanung</strong><br>
-    Mit klaren Workflows und digitalen Tools behalten Sie jederzeit den Überblick.
-  </div>
+                    <div class="feature-card">
+                        <img src="img/Kompetenzen.png" alt="Kompetenz Icon" class="feature-icon">
+                        <h3>Smarte Tools</h3>
+                        <p>Wir entwickeln kleine, passgenaue Werkzeuge, die genau das tun, was Sie brauchen – Automatisierung mit Verstand.</p>
+                    </div>
 
-  <div>
-    <img src="img/Umsatz.png" alt="Umsatz steigern" style="width: 40px; height: 40px;"><br>
-    <strong>Umsatz gezielt steigern</strong><br>
-    Durch effizientere Abläufe und bessere Kundenansprache erhöhen Sie Ihre Performance.
-  </div>
+                    <div class="feature-card">
+                        <img src="img/Aufgabenplanung.png" alt="Planung Icon" class="feature-icon">
+                        <h3>Zeit gewinnen</h3>
+                        <p>Verabschieden Sie sich von Routineaufgaben. Was früher Stunden dauerte, erledigt der Computer jetzt in Sekunden.</p>
+                    </div>
 
-  <div>
-    <img src="img/Datensicherheit.png" alt="Datensicherheit" style="width: 40px; height: 40px;"><br>
-    <strong>Datensicherheit erhöhen</strong><br>
-    Schutz sensibler Informationen und maximale Integrität Ihrer Daten – DSGVO-konform.
-  </div>
+                    <div class="feature-card">
+                        <img src="img/Datensicherheit.png" alt="Sicherheit Icon" class="feature-icon">
+                        <h3>Sicherheit & Ordnung</h3>
+                        <p>Schluss mit fehleranfälligen Bastel-Lösungen. Wir sorgen für stabile Datenstrukturen und verlässliche Backups.</p>
+                    </div>
 
-  <div>
-    <img src="img/Analyse.png" alt="Prozesse analysieren" style="width: 40px; height: 40px;"><br>
-    <strong>Prozesse analysieren</strong><br>
-    Identifizieren Sie Schwachstellen und optimieren Sie gezielt mit datenbasierten Insights.
-  </div>
-</div>
+                </div>
+            </div>
+        </section>
 
-<p style="margin-top: 2rem;">
-  <strong>Bereit für den nächsten Schritt? Wir freuen uns auf Ihre Herausforderung.</strong>
-</p>
+        <section class="cta-section">
+            <div class="container">
+                <h2>Lassen Sie uns Ihren Alltag erleichtern.</h2>
+                <p>Schreiben Sie mir kurz, welcher Prozess Sie am meisten nervt. Ich sage Ihnen ehrlich, ob sich eine Automatisierung lohnt.</p>
+                <a href="kontakt.html" class="btn-primary-large">Unverbindlich anfragen</a>
+            </div>
+        </section>
 
-<a href="#kontakt" style="display: inline-block; background-color: #007bff; color: white; padding: 12px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
-  Jetzt Kontakt aufnehmen
-</a>
+    </main>
 
-  </main>
-  <footer>
-    <a href="impressum.html">Impressum</a> | <a href="datenschutz.html">Datenschutz</a>
-  </footer>
-<!-- Preloader -->
-<div id="preloader">
-  <div id="logo-container">
-    <img src="img/logo_trans_750.png" alt="BTS Logo" />
-  </div>
-</div>
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div class="footer-col">
+                <h4>Berlin Tech Solutions</h4>
+                <p>Technik, die wirkt. <br>Pragmatische IT-Lösungen für KMU.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Rechtliches</h4>
+                <ul>
+                    <li><a href="impressum.html">Impressum</a></li>
+                    <li><a href="datenschutz.html">Datenschutz</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright text-center">
+            &copy; 2024 Berlin Tech Solutions
+        </div>
+    </footer>
+
 </body>
 </html>
