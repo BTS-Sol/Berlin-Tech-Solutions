@@ -1,0 +1,422 @@
+/* =========================================
+   1. GRUNDEINSTELLUNGEN & VARIABLEN
+   ========================================= */
+:root {
+    --primary-color: #0056b3;     /* Seriöses IT-Blau */
+    --primary-hover: #004494;
+    --secondary-color: #f4f6f8;   /* Heller Hintergrund für Sections */
+    --text-color: #222222;
+    --text-light: #555555;
+    --white: #ffffff;
+    --border-color: #e0e0e0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    /* SYSTEM FONTS: Nutzt die native Schriftart des Betriebssystems (Apple, Windows, Android) */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--secondary-color);
+}
+
+/* Container für zentrierten Inhalt (max. 1100px breit) */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Hilfsklasse für zentrierten Text */
+.text-center {
+    text-align: center;
+}
+
+/* =========================================
+   2. HEADER & NAVIGATION
+   ========================================= */
+/* =========================================
+   2. HEADER & NAVIGATION
+   ========================================= */
+.site-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border-color);
+    /* PADDING REDUZIERT: Damit das Logo den Balken mehr "ausfüllt" */
+    padding: 5px 0; 
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Stellt sicher, dass das Logo nicht gequetscht wird */
+    min-height: 100px; 
+}
+
+.logo-img {
+    /* LOGO GRÖSSE: Massiv erhöht auf 90px */
+    height: 90px; 
+    width: auto;
+    display: block;
+    object-fit: contain; /* Verhindert Verzerrung */
+}
+
+/* Navigation */
+.main-nav ul {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+    align-items: center; /* Zentriert die Links vertikal zum großen Logo */
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+.main-nav a:hover, .main-nav a.active {
+    color: var(--primary-color);
+}
+
+.btn-nav {
+    background-color: var(--primary-color);
+    color: var(--white) !important;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.btn-nav:hover {
+    background-color: var(--primary-hover);
+}
+
+/* Mobile-Anpassung für das Logo (damit der Header auf dem Handy nicht explodiert) */
+@media (max-width: 768px) {
+    .logo-img {
+        height: 60px; /* Auf Handys etwas kleiner, aber immer noch gut sichtbar */
+    }
+    .header-flex {
+        min-height: auto; /* Auf Handys Höhe automatisch */
+    }
+}
+
+/* =========================================
+   3. HERO SECTION
+   ========================================= */
+.hero {
+    padding: 80px 0;
+    text-align: center;
+    background-color: var(--white);
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    color: #111;
+}
+
+.hero .lead {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    max-width: 700px;
+    margin: 0 auto 2.5rem auto;
+}
+
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Buttons */
+.btn-primary, .btn-primary-large {
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover, .btn-primary-large:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--primary-color);
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 6px;
+    border: 1px solid var(--primary-color);
+    font-weight: 600;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: rgba(0, 86, 179, 0.05);
+}
+
+/* =========================================
+   4. SECTIONS & GRID
+   ========================================= */
+section {
+    padding: 60px 0;
+}
+
+.section-gray {
+    background-color: var(--secondary-color);
+}
+
+/* Feature Grid: 2 Spalten Layout (2 oben, 2 unten) */
+.grid-4 {
+    display: grid;
+    /* Zwingt den Browser auf exakt 2 gleich große Spalten */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+}
+
+/* Mobile Anpassung: Auf kleinen Screens alles untereinander */
+@media (max-width: 768px) {
+    .grid-4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.feature-card {
+    background: var(--white);
+    padding: 30px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%; /* Gleichmäßige Höhe */
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.feature-icon {
+    height: 70px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    margin: 0 auto 20px auto;
+    display: block;
+}
+
+.feature-card h3 {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: #222;
+}
+
+.feature-card p {
+    font-size: 0.95rem;
+    color: var(--text-light);
+}
+
+/* =========================================
+   5. CTA SECTION
+   ========================================= */
+.cta-section {
+    background-color: #eef4fb; 
+    text-align: center;
+    border-top: 1px solid #dcebf9;
+}
+
+.cta-section h2 {
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.cta-section p {
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* =========================================
+   6. FOOTER
+   ========================================= */
+.site-footer {
+    background-color: #222;
+    color: #ccc;
+    padding: 40px 0 20px 0;
+    font-size: 0.9rem;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.footer-col h4 {
+    color: var(--white);
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col ul li {
+    margin-bottom: 8px;
+}
+
+.footer-col a {
+    color: #ccc;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-col a:hover {
+    color: var(--white);
+}
+
+.copyright {
+    border-top: 1px solid #444;
+    padding-top: 20px;
+    text-align: center;
+    color: #888;
+}
+
+/* =========================================
+   7. EXTRAS & KONTAKTFORMULAR
+   ========================================= */
+/* Preloader */
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#logo-container {
+    opacity: 0;
+    animation: fadeIn 2s ease-in-out forwards;
+    animation-delay: 0.5s;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* Kontaktformular Styles (falls benötigt) */
+.contact-form {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.contact-form .form-group { margin-bottom: 1.5rem; }
+.contact-form label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+.contact-form input, .contact-form textarea {
+    width: 100%; padding: 0.75rem; border: 1px solid #ccc;
+    border-radius: 6px; font-size: 1rem; background-color: #fdfdfd;
+}
+.contact-form .submit-btn {
+    background-color: var(--primary-color); color: white;
+    padding: 0.75rem 1.5rem; border: none; border-radius: 6px;
+    cursor: pointer; transition: background-color 0.3s ease;
+}
+.contact-form .submit-btn:hover { background-color: var(--primary-hover); }
+
+/* =========================================
+   8. MOBILE RESPONSIVE
+   ========================================= */
+@media (max-width: 768px) {
+    .header-flex { 
+        flex-direction: column; 
+        gap: 15px; 
+    }
+    
+    .main-nav ul { 
+        gap: 15px; 
+        font-size: 0.9rem;
+        flex-wrap: wrap; 
+        justify-content: center;
+    }
+    
+    .hero h1 { 
+        font-size: 1.8rem; 
+    }
+    
+    .hero-actions {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+    }
+}
+
+/* =========================================
+   9. ANPASSUNG FÜR LEISTUNGS-LINKS
+   ========================================= */
+
+/* Damit der Link wie eine Box aussieht und nicht wie Text */
+a.feature-card {
+    text-decoration: none;      /* Kein Unterstrich */
+    color: inherit;             /* Textfarbe bleibt dunkel */
+    display: block;             /* Nimmt den Platz der Box ein */
+    height: 100%;               /* Gleiche Höhe */
+}
+
+/* Spezieller Hover-Effekt für die Link-Karten */
+a.feature-card:hover {
+    border: 1px solid var(--primary-color); /* Zarter blauer Rand */
+    transform: translateY(-5px);            /* Hoch-Effekt */
+    color: inherit;                         /* Text bleibt dunkel */
+}
+
+/* Optional: Titel beim Hover färben */
+a.feature-card:hover h3 {
+    color: var(--primary-color);
+}
+
+.preloader-logo {
+    width: 600px;       /* Deutlich größer für PC (vorher 300px) */
+    max-width: 85%;     /* Handy-Schutz: Nie breiter als 85% des Screens */
+    height: auto;       /* Verhältnis bleibt erhalten */
+    display: block;     /* Nötig für Zentrierung */
+    margin: 0 auto;     /* Zwingt das Bild horizontal genau in die Mitte */
+}
